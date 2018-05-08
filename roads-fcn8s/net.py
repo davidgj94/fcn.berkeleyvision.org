@@ -80,8 +80,8 @@ def fcn_roads(split):
             bias_term=False),
         param=[dict(lr_mult=0)])
 
-    n.score_roads = crop(n.upscore8_roads, n.data)
-    n.loss_roads = L.SoftmaxWithLoss(n.score_roads, n.label,
+    n.score = crop(n.upscore8_roads, n.data)
+    n.loss = L.SoftmaxWithLoss(n.score, n.label,
             loss_param=dict(normalize=False, ignore_label=255))
 
     return n.to_proto()

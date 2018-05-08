@@ -13,9 +13,9 @@ except:
 
 
 # init
-caffe.set_mode_cpu()
+caffe.set_mode_gpu()
 
-voc_net = caffe.Net('../voc-fcn8s/deploy.prototxt', '../voc-fcn8s/fcn8s-heavy-pascal.caffemodel', caffe.TEST)
+voc_net = caffe.Net('../voc-fcn8s/deploy.prototxt', '../voc-fcn8s/fcn8s-heavy-pascal.caffemodel', caffe.TRAIN)
 
 solver = caffe.SGDSolver('solver.prototxt')
 
@@ -29,6 +29,6 @@ surgery.interp(solver.net, interp_layers)
 # scoring
 val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str)
 
-for _ in range(1):
-    solver.step(20)
+for _ in range(5):
+    solver.step(4000)
     score.seg_tests(solver, False, val, layer='score')

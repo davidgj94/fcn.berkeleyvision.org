@@ -2,7 +2,6 @@
 set -e
 
 CURRENT_DIR=`pwd`
-CAFFE_DIR="/home/david/projects/caffe/python"
 
 cd ..
 
