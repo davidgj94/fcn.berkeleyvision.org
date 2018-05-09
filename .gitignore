@@ -4,3 +4,4 @@ voc-fcn16s/
 voc-fcn32s/
 roads-fcn8s/snapshot
 *.caffemodel
+*pyc
