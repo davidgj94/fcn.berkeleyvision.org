@@ -51,6 +51,7 @@ class RoadsDataLayer(caffe.Layer):
                 self.split)
         self.indices = open(split_f, 'r').read().splitlines()
         self.idx = 0
+        self.random = False
 
         # make eval deterministic
         if 'train' not in self.split:
