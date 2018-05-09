@@ -3,3 +3,4 @@ voc-fcn8s/
 voc-fcn16s/ 
 voc-fcn32s/
 roads-fcn8s/snapshot
+*.caffemodel

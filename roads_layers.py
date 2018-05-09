@@ -2,6 +2,8 @@ import caffe
 import numpy as np
 from PIL import Image
 import random
+import skimage.io
+import matplotlib.pyplot as plt
 
 class RoadsDataLayer(caffe.Layer):
     """
@@ -112,4 +114,3 @@ class RoadsDataLayer(caffe.Layer):
         label = np.array(im, dtype=np.uint8)
         label = label[np.newaxis, ...]
         return label
-
