@@ -1,5 +1,5 @@
 import caffe
-import surgery, score
+import surgery, score, score_vis
 
 import numpy as np
 import os
@@ -30,5 +30,6 @@ surgery.interp(solver.net, interp_layers)
 val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str)
 
 for _ in range(5):
-    solver.step(4000)
-    score.seg_tests(solver, False, val, layer='score')
+    solver.step(150)
+    #score.seg_tests(solver, False, val, layer='score')
+    score_vis.vis_val(solver, val)
