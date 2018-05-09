@@ -16,10 +16,11 @@ def transplant(new_net, net, suffix=''):
     Both  `net` to `new_net` arguments must be instantiated `caffe.Net`s.
     """
     for p in net.params:
-        p_new = p + suffix
-        if p_new not in new_net.params:
+        #p_new = p + suffix
+        if p not in new_net.params:
             print 'dropping', p
             continue
+        p_new = p
         for i in range(len(net.params[p])):
             if i > (len(new_net.params[p_new]) - 1):
                 print 'dropping', p, i

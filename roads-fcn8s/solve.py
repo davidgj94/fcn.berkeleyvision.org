@@ -21,16 +21,17 @@ solver = caffe.SGDSolver('solver.prototxt')
 
 # surgeries
 
-surgery.transplant(solver.net, voc_net);
+surgery.transplant(solver.net, voc_net, '_roads');
 
 interp_layers = [k for k in solver.net.params.keys() if 'up' in k]
+print interp_layers
 surgery.interp(solver.net, interp_layers)
 
 # scoring
 val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str)
 train = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/train.txt', dtype=str)
 
-for _ in range(5):
+for _ in range(10):
     solver.step(190)
     solver.test_nets[0].share_with(solver.net)
     val_net = solver.test_nets[0]
