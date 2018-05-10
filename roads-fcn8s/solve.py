@@ -13,7 +13,7 @@ try:
 except:
     pass
 
-results_path = 'results_{}/'.format(sys.argv[1])
+results_path = 'results/{}/'.format(sys.argv[1])
 if os.path.exists(results_path):
     shutil.rmtree(results_path, ignore_errors=True)
 else:
