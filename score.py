@@ -5,6 +5,7 @@ import os
 import sys
 from datetime import datetime
 from PIL import Image
+import vis
 
 def fast_hist(a, b, n):
     k = (a >= 0) & (a < n)
@@ -23,8 +24,17 @@ def compute_hist(net, save_dir, dataset, layer='score', gt='label'):
                                 n_cl)
 
         if save_dir:
-            im = Image.fromarray(net.blobs[layer].data[0].argmax(0).astype(np.uint8), mode='P')
-            im.save(os.path.join(save_dir, idx + '.png'))
+            
+            sat_path = '/home/davidgj/projects_v2/fcn.berkeleyvision.org/data/roads/ROADS/PNGImages/{}.png'.format(idx)
+            sat = Image.open(sat_path)
+            score = net.blobs["score"].data[...][0,:,:,:]
+            score = score.transpose((1,2,0))
+            label = np.argmax(score, axis=2)
+            vis_img = Image.fromarray(vis.vis_seg(sat, label, vis.make_palette(2)))
+            vis_img.save(os.path.join(save_dir, idx + '.png'))
+            
+            #im = Image.fromarray(net.blobs[layer].data[0].argmax(0).astype(np.uint8), mode='P')
+            #im.save(os.path.join(save_dir, idx + '.png'))
         # compute the loss as well
         loss += net.blobs['loss'].data.flat[0]
     return hist, loss / len(dataset)

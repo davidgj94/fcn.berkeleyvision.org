@@ -5,6 +5,7 @@ import numpy as np
 import os
 import sys
 import matplotlib.pyplot as plt
+import shutil
 
 try:
     import setproctitle
@@ -12,7 +13,11 @@ try:
 except:
     pass
 
-
+results_path = 'results_{}/'.format(sys.argv[1])
+if os.path.exists(results_path):
+    shutil.rmtree(results_path, ignore_errors=True)
+else:
+    os.mkdir(results_path)
 # init
 caffe.set_mode_gpu()
 
@@ -43,7 +48,7 @@ for epoch in range(nepoch):
     #solver.test_nets[0].share_with(solver.net)
     #val_net = solver.test_nets[0]
     #train_net = solver.net
-    score.seg_tests(solver, 'val_results_{}', val, layer='score')
+    score.seg_tests(solver, results_path + 'iter_{}', val, layer='score')
     #score_vis.vis_val(train_net, train)
     
 #plt.plot(range(nepoch), train_loss)  
