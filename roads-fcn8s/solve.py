@@ -16,8 +16,10 @@ except:
 results_path = 'results/{}/'.format(sys.argv[1])
 if os.path.exists(results_path):
     shutil.rmtree(results_path, ignore_errors=True)
+    os.mkdir(results_path)
 else:
     os.mkdir(results_path)
+    
 # init
 caffe.set_mode_gpu()
 
@@ -39,7 +41,7 @@ train = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/train.txt', dtype
 
 niter = train.shape[0]
 #niter = 190
-nepoch = 2
+nepoch = 10
 #train_loss = np.zeros(nepoch)
 
 for epoch in range(nepoch):

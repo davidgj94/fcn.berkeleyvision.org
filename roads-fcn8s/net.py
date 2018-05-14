@@ -18,6 +18,8 @@ def fcn_roads(split):
     pydata_params = dict(split=split, mean=(109.31270171, 112.73650684, 107.62839719),
             seed=1337, voc_dir='../data/roads/ROADS')
     pylayer = 'RoadsDataLayer'
+    
+    num_classes = 3;
         
     n.data, n.label = L.Python(module='roads_layers', layer=pylayer,
             ntop=2, param_str=str(pydata_params))
@@ -53,30 +55,37 @@ def fcn_roads(split):
     n.drop7 = L.Dropout(n.relu7, dropout_ratio=0.5, in_place=True)
     
     # score
-    n.score_fr_roads = L.Convolution(n.drop7, num_output=2, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
+    n.score_fr_roads = L.Convolution(n.drop7, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
         param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
+    
     n.upscore2_roads = L.Deconvolution(n.score_fr_roads,
-        convolution_param=dict(num_output=2, kernel_size=4, stride=2,
+        convolution_param=dict(num_output=num_classes, kernel_size=4, stride=2,
             bias_term=False),
         param=[dict(lr_mult=0)])
 
-    n.score_pool4_roads = L.Convolution(n.pool4, num_output=2, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
+    n.score_pool4_roads = L.Convolution(n.pool4, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
         param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
+    
     n.score_pool4c_roads = crop(n.score_pool4_roads, n.upscore2_roads)
+    
     n.fuse_pool4_roads = L.Eltwise(n.upscore2_roads, n.score_pool4c_roads,
             operation=P.Eltwise.SUM)
+    
     n.upscore_pool4_roads = L.Deconvolution(n.fuse_pool4_roads,
-        convolution_param=dict(num_output=2, kernel_size=4, stride=2,
+        convolution_param=dict(num_output=num_classes, kernel_size=4, stride=2,
             bias_term=False),
         param=[dict(lr_mult=0)])
 
-    n.score_pool3_roads = L.Convolution(n.pool3, num_output=2, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
+    n.score_pool3_roads = L.Convolution(n.pool3, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
         param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
+    
     n.score_pool3c_roads = crop(n.score_pool3_roads, n.upscore_pool4_roads)
+    
     n.fuse_pool3_roads = L.Eltwise(n.upscore_pool4_roads, n.score_pool3c_roads,
             operation=P.Eltwise.SUM)
+    
     n.upscore8_roads = L.Deconvolution(n.fuse_pool3_roads,
-        convolution_param=dict(num_output=2, kernel_size=16, stride=8,
+        convolution_param=dict(num_output=num_classes, kernel_size=16, stride=8,
             bias_term=False),
         param=[dict(lr_mult=0)])
 

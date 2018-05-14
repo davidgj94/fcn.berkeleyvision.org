@@ -15,5 +15,5 @@ iter_size: 1
 max_iter: 100000
 weight_decay: 0.0005
 snapshot: 20000
-snapshot_prefix: "snapshot/train_base_lr:1e-10_momentum:0.9"
+snapshot_prefix: "snapshot/base_lr:1e-10_momentum:0.9_disconn_other"
 test_initialization: false
