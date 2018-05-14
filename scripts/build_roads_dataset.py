@@ -42,18 +42,27 @@ for road in roads:
     
     for glob in road.glob('*/*/sat.png'):
         
-        idx += 1
-        
-        mask_path = '/'.join(glob.parts[:-1]) + '/mask_road.png'
+        #road_mask_path = '/'.join(glob.parts[:-1]) + '/mask_road.png'
+        disconn_mask_path = '/'.join(glob.parts[:-1]) + '/mask_disconn.png'
+        other_mask_path = '/'.join(glob.parts[:-1]) + '/mask_other.png'
         sat_path = '/'.join(glob.parts)
         
-        if not os.path.exists(mask_path):
+        if not (os.path.exists(disconn_mask_path) and os.path.exists(other_mask_path)):
+            print disconn_mask_path
+            print 'Masks incompletas en {}'.format(sat_path)
             continue
         
-        mask_length, mask_width = np.array(Image.open(mask_path)).shape[:-1]
+        #road_mask_length, road_mask_width = np.array(Image.open(road_mask_path)).shape[:-1]
+        disconn_mask_length, disconn_mask_width = np.array(Image.open(disconn_mask_path)).shape[:-1]
+        other_mask_length, other_mask_width = np.array(Image.open(other_mask_path)).shape[:-1]
         sat_length, sat_width = np.array(Image.open(sat_path)).shape[:-1]
         
-        if mask_length != sat_length or mask_width != sat_width:
+        if disconn_mask_length == other_mask_length and disconn_mask_width == other_mask_width:
+            if sat_length != disconn_mask_length and sat_width != disconn_mask_width:
+                print 'Dimensiones sat.png no coinciden en {}'.format(sat_path)
+                continue
+        else:
+            print 'Dimensiones mask_disconn.png y mask_other.png no coinciden en {}'.format(sat_path)
             continue
         
         new_name = ':'.join(glob.parts[-4:-1])
@@ -61,6 +70,8 @@ for road in roads:
         if new_name == '39.273155_-3.446121:sec_3:sec_3_1':
             continue
 
+        idx += 1
+        
         if idx % 3 != 0:
             train_size += 1
             desc_txt = 'train.txt'
@@ -75,7 +86,10 @@ for road in roads:
             txt.write(new_name + '\n')
         
         shutil.copy(sat_path, png_images_dir + new_name + '.png')
-        shutil.copy(mask_path, segmentation_class_dir + new_name + '.png')
+        new_dir = '{}/{}/'.format(segmentation_class_dir, new_name)
+        os.makedirs(new_dir)
+        shutil.copy(disconn_mask_path, new_dir + 'disconn.png')
+        shutil.copy(other_mask_path, new_dir + 'other.png')
     
 print('train_size: {}\n'.format(str(train_size)))
 print('val_size: {}\n'.format(str(val_size)))
