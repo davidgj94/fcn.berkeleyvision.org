@@ -15,5 +15,5 @@ iter_size: 1
 max_iter: 100000
 weight_decay: 0.0005
 snapshot: 179
-snapshot_prefix: "snapshot/prueba2"
+snapshot_prefix: "snapshot/asdf"
 test_initialization: false
