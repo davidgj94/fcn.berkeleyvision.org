@@ -42,7 +42,7 @@ def compute_hist(net, save_dir, dataset, layer='score', gt='label'):
 def seg_tests(solver, save_format, dataset, layer='score', gt='label'):
     print '>>>', datetime.now(), 'Begin seg tests'
     solver.test_nets[0].share_with(solver.net)
-    do_seg_tests(solver.test_nets[0], solver.iter, save_format, dataset, layer, gt)
+    return do_seg_tests(solver.test_nets[0], solver.iter, save_format, dataset, layer, gt)
 
 def do_seg_tests(net, iter, save_format, dataset, layer='score', gt='label'):
     n_cl = net.blobs[layer].channels
@@ -63,4 +63,4 @@ def do_seg_tests(net, iter, save_format, dataset, layer='score', gt='label'):
     freq = hist.sum(1) / hist.sum()
     print '>>>', datetime.now(), 'Iteration', iter, 'fwavacc', \
             (freq[freq > 0] * iu[freq > 0]).sum()
-    return hist
+    return loss, acc, iu

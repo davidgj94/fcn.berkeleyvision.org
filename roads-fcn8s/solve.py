@@ -6,6 +6,8 @@ import os
 import sys
 import matplotlib.pyplot as plt
 import shutil
+import pickle
+import time
 
 try:
     import setproctitle
@@ -14,11 +16,11 @@ except:
     pass
 
 results_path = 'results/{}/'.format(sys.argv[1])
-if os.path.exists(results_path):
-    shutil.rmtree(results_path, ignore_errors=True)
+if not os.path.exists(results_path):
+    #shutil.rmtree(results_path, ignore_errors=True)
     os.mkdir(results_path)
-else:
-    os.mkdir(results_path)
+#else:
+#    os.mkdir(results_path)
     
 # init
 caffe.set_mode_gpu()
@@ -40,19 +42,34 @@ val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str
 train = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/train.txt', dtype=str)
 
 niter = train.shape[0]
-#niter = 190
-nepoch = 10
-#train_loss = np.zeros(nepoch)
+nepoch = 1
 
+print train.shape[0]
+sys.exit()
+
+train_loss = []
+val_loss = []
+acc = []
+iu = []
+
+if os.path.exists(results_path + 'results.p'):
+    with open(results_path + 'results.p', 'rb') as f:
+        train_loss , val_loss, acc, iu = pickle.load(f)
+    
 for epoch in range(nepoch):
     solver.step(niter)
-    #train_loss[epoch] = solver.net.blobs['loss'].data
-    #solver.test_nets[0].share_with(solver.net)
-    #val_net = solver.test_nets[0]
-    #train_net = solver.net
-    score.seg_tests(solver, results_path + 'iter_{}', val, layer='score')
-    #score_vis.vis_val(train_net, train)
+    train_loss_ = solver.net.blobs['loss'].data
+    val_loss_, acc_, iu_ = score.seg_tests(solver, results_path + 'iter_{}', val, layer='score')
+    train_loss.append(train_loss_)
+    val_loss.append(val_loss_)
+    acc.append(acc_)
+    iu.append(iu_)
+
+plt.plot(np.arange(len(train_loss)), train_loss)
+plt.show()
+
+with open(results_path + 'results.p', 'wb') as f:
+    pickle.dump((train_loss , val_loss, acc, iu), f) 
+
     
-#plt.plot(range(nepoch), train_loss)  
-#plt.show()
 
