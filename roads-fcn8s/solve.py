@@ -24,14 +24,13 @@ def get_iter(solver_state):
 
 results_path = 'results/{}/'.format(sys.argv[1])
 snapshot_dir = "snapshot/{}/".format(sys.argv[1])
+
 if not os.path.exists(results_path):
-    #shutil.rmtree(results_path, ignore_errors=True)
     os.mkdir(results_path)
-#else:
-#    os.mkdir(results_path)
+
 if not os.path.exists(snapshot_dir):
-    #shutil.rmtree(results_path, ignore_errors=True)
     os.mkdir(snapshot_dir)
+
 # init
 caffe.set_mode_gpu()
 
@@ -53,13 +52,15 @@ else:
 val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str)
 train = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/train.txt', dtype=str)
 
-niter = train.shape[0]
+niter = train.shape[0] #179
 nepoch = 2
 
 train_loss = []
 val_loss = []
-acc = []
-iu = []
+train_acc = []
+val_acc = []
+train_iu = []
+val_iu = []
 
 if os.path.exists(results_path + 'results.p'):
     with open(results_path + 'results.p', 'rb') as f:
@@ -74,6 +75,7 @@ for epoch in range(nepoch):
     acc.append(acc_)
     iu.append(iu_)
 
+# save results
 with open(results_path + 'results.p', 'wb') as f:
     pickle.dump((train_loss , val_loss, acc, iu), f) 
 
