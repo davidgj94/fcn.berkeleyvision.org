@@ -9,11 +9,11 @@ lr_policy: "fixed"
 # lr for unnormalized softmax
 base_lr: 1e-10
 # high momentum
-momentum: 0.9
+momentum: 0.99
 # no gradient accumulation
 iter_size: 1
 max_iter: 100000
 weight_decay: 0.0005
 snapshot: 179
-snapshot_prefix: "snapshot/prueba_1"
+snapshot_prefix: "snapshot/prueba_2"
 test_initialization: false
