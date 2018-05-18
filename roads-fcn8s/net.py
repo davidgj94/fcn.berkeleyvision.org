@@ -55,7 +55,7 @@ def fcn_roads(split):
     n.drop7 = L.Dropout(n.relu7, dropout_ratio=0.5, in_place=True)
     
     # score
-    lr_mult_score = 10000
+    lr_mult_score = 100
     n.score_fr_roads = L.Convolution(n.drop7, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
         param=[dict(lr_mult=lr_mult_score, decay_mult=1), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
     
