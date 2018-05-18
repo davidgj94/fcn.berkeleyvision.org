@@ -55,8 +55,9 @@ def fcn_roads(split):
     n.drop7 = L.Dropout(n.relu7, dropout_ratio=0.5, in_place=True)
     
     # score
+    lr_mult_score = 10000
     n.score_fr_roads = L.Convolution(n.drop7, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
-        param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
+        param=[dict(lr_mult=lr_mult_score, decay_mult=1), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
     
     n.upscore2_roads = L.Deconvolution(n.score_fr_roads,
         convolution_param=dict(num_output=num_classes, kernel_size=4, stride=2,
@@ -64,7 +65,7 @@ def fcn_roads(split):
         param=[dict(lr_mult=0)])
 
     n.score_pool4_roads = L.Convolution(n.pool4, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
-        param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
+        param=[dict(lr_mult=lr_mult_score, decay_mult=1), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
     
     n.score_pool4c_roads = crop(n.score_pool4_roads, n.upscore2_roads)
     
@@ -77,7 +78,7 @@ def fcn_roads(split):
         param=[dict(lr_mult=0)])
 
     n.score_pool3_roads = L.Convolution(n.pool3, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
-        param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
+        param=[dict(lr_mult=lr_mult_score, decay_mult=1), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
     
     n.score_pool3c_roads = crop(n.score_pool3_roads, n.upscore_pool4_roads)
     

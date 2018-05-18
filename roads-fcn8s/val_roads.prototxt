@@ -478,11 +478,11 @@ layer {
   bottom: "fc7"
   top: "score_fr_roads"
   param {
-    lr_mult: 1.0
+    lr_mult: 10000.0
     decay_mult: 1.0
   }
   param {
-    lr_mult: 2.0
+    lr_mult: 20000.0
     decay_mult: 0.0
   }
   convolution_param {
@@ -515,11 +515,11 @@ layer {
   bottom: "pool4"
   top: "score_pool4_roads"
   param {
-    lr_mult: 1.0
+    lr_mult: 10000.0
     decay_mult: 1.0
   }
   param {
-    lr_mult: 2.0
+    lr_mult: 20000.0
     decay_mult: 0.0
   }
   convolution_param {
@@ -573,11 +573,11 @@ layer {
   bottom: "pool3"
   top: "score_pool3_roads"
   param {
-    lr_mult: 1.0
+    lr_mult: 10000.0
     decay_mult: 1.0
   }
   param {
-    lr_mult: 2.0
+    lr_mult: 20000.0
     decay_mult: 0.0
   }
   convolution_param {
