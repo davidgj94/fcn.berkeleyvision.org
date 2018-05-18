@@ -55,7 +55,7 @@ val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str
 train = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/train.txt', dtype=str)
 
 niter = train.shape[0]
-nepoch = 5
+nepoch = 2
 
 train_loss = []
 val_loss = []

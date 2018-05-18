@@ -479,7 +479,7 @@ layer {
   top: "score_fr_roads"
   param {
     lr_mult: 100.0
-    decay_mult: 1.0
+    decay_mult: 10.0
   }
   param {
     lr_mult: 200.0
@@ -516,7 +516,7 @@ layer {
   top: "score_pool4_roads"
   param {
     lr_mult: 100.0
-    decay_mult: 1.0
+    decay_mult: 10.0
   }
   param {
     lr_mult: 200.0
@@ -574,7 +574,7 @@ layer {
   top: "score_pool3_roads"
   param {
     lr_mult: 100.0
-    decay_mult: 1.0
+    decay_mult: 10.0
   }
   param {
     lr_mult: 200.0
