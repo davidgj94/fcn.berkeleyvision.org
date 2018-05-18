@@ -39,8 +39,12 @@ def compute_hist(net, save_dir, dataset, layer='score', gt='label'):
         loss += net.blobs['loss'].data.flat[0]
     return hist, loss / len(dataset)
 
-def seg_tests(solver, save_format, dataset, layer='score', gt='label'):
-    print '>>>', datetime.now(), 'Begin seg tests'
+def seg_tests_train(solver, save_format, dataset, layer='score', gt='label'):
+    print '>>>', datetime.now(), 'Begin train seg tests'
+    return do_seg_tests(solver.net, solver.iter, save_format, dataset, layer, gt)
+
+def seg_tests_val(solver, save_format, dataset, layer='score', gt='label'):
+    print '>>>', datetime.now(), 'Begin val seg tests'
     solver.test_nets[0].share_with(solver.net)
     return do_seg_tests(solver.test_nets[0], solver.iter, save_format, dataset, layer, gt)
 

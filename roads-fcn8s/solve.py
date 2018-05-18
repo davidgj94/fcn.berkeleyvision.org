@@ -23,10 +23,14 @@ def get_iter(solver_state):
     return int(parsed[0])
 
 results_path = 'results/{}/'.format(sys.argv[1])
+results_path_train = results_path + 'train/'
+results_path_val = results_path + 'val/'
 snapshot_dir = "snapshot/{}/".format(sys.argv[1])
 
 if not os.path.exists(results_path):
     os.mkdir(results_path)
+    os.mkdir(results_path_train)
+    os.mkdir(results_path_val)
 if not os.path.exists(snapshot_dir):
     os.mkdir(snapshot_dir)
 # init
@@ -51,7 +55,7 @@ val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str
 train = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/train.txt', dtype=str)
 
 niter = train.shape[0]
-nepoch = 2
+nepoch = 5
 
 train_loss = []
 val_loss = []
@@ -62,37 +66,81 @@ val_iu = []
 
 if os.path.exists(results_path + 'results.p'):
     with open(results_path + 'results.p', 'rb') as f:
-        train_loss , val_loss, acc, iu = pickle.load(f)
+        train_loss , val_loss, train_acc, val_acc, train_iu, val_iu = pickle.load(f)
 
 for epoch in range(nepoch):
+    
     solver.step(niter)
-    train_loss_ = solver.net.blobs['loss'].data
-    val_loss_, acc_, iu_ = score.seg_tests(solver, results_path + 'iter_{}', val, layer='score')
+    
+    train_loss_, train_acc_, train_iu_ = score.seg_tests_train(solver, results_path_train + 'iter_{}', train, layer='score')
+    val_loss_, val_acc_, val_iu_ = score.seg_tests_val(solver,  results_path_val + 'iter_{}', val, layer='score')
+    
     train_loss.append(train_loss_)
+    train_acc.append(train_acc_)
+    train_iu.append(train_iu_)
+    
     val_loss.append(val_loss_)
-    acc.append(acc_)
-    iu.append(iu_)
+    val_acc.append(val_acc_)
+    val_iu.append(val_iu_)
 
 with open(results_path + 'results.p', 'wb') as f:
-    pickle.dump((train_loss , val_loss, acc, iu), f) 
+    pickle.dump((train_loss , val_loss, train_acc, val_acc, train_iu, val_iu), f)
 
-plt.plot(np.arange(len(train_loss)), train_loss)
+def get_class_score(scores, idx):
+    return [el[idx] for el in scores]
+
+num_epochs = range(len(train_loss))
+
+# Loss
+plt.plot(num_epochs, train_loss)
+plt.plot(num_epochs, val_loss)
 plt.grid()
-plt.title('Train loss')
+plt.legend(['Train', 'Val'])
+plt.title('Train/Val loss')
 plt.show()
 
-plt.plot(np.arange(len(val_loss)), val_loss)
-plt.title('Val loss')
+# Per-Class accuracy
+plt.plot(num_epochs, get_class_score(train_acc, 0))
+plt.plot(num_epochs, get_class_score(val_acc, 0))
+plt.title('Train/Val Class 0 Accuracy')
+plt.legend(['Train', 'Val'])
 plt.grid()
 plt.show()
 
-plt.plot(np.arange(len(acc)), acc)
-plt.title('Per Class Accuracy')
+plt.plot(num_epochs, get_class_score(train_acc, 1))
+plt.plot(num_epochs, get_class_score(val_acc, 1))
+plt.title('Train/Val Class 1 Accuracy')
+plt.legend(['Train', 'Val'])
 plt.grid()
 plt.show()
 
-plt.plot(np.arange(len(iu)), iu)
+plt.plot(num_epochs, get_class_score(train_acc, 2))
+plt.plot(num_epochs, get_class_score(val_acc, 2))
+plt.title('Train/Val Class 2 Accuracy')
+plt.legend(['Train', 'Val'])
 plt.grid()
-plt.title('Iu')
 plt.show()
+
+# Per-Class IU
+plt.plot(num_epochs, get_class_score(train_iu, 0))
+plt.plot(num_epochs, get_class_score(val_iu, 0))
+plt.title('Train/Val Class 0 IU')
+plt.legend(['Train', 'Val'])
+plt.grid()
+plt.show()
+
+plt.plot(num_epochs, get_class_score(train_iu, 1))
+plt.plot(num_epochs, get_class_score(val_iu, 1))
+plt.title('Train/Val Class 1 IU')
+plt.legend(['Train', 'Val'])
+plt.grid()
+plt.show()
+
+plt.plot(num_epochs, get_class_score(train_iu, 2))
+plt.plot(num_epochs, get_class_score(val_iu, 2))
+plt.title('Train/Val Class 2 IU')
+plt.legend(['Train', 'Val'])
+plt.grid()
+plt.show()
+
 
