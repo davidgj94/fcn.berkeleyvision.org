@@ -27,10 +27,8 @@ snapshot_dir = "snapshot/{}/".format(sys.argv[1])
 
 if not os.path.exists(results_path):
     os.mkdir(results_path)
-
 if not os.path.exists(snapshot_dir):
     os.mkdir(snapshot_dir)
-
 # init
 caffe.set_mode_gpu()
 
@@ -52,7 +50,7 @@ else:
 val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str)
 train = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/train.txt', dtype=str)
 
-niter = train.shape[0] #179
+niter = train.shape[0]
 nepoch = 2
 
 train_loss = []
@@ -75,7 +73,6 @@ for epoch in range(nepoch):
     acc.append(acc_)
     iu.append(iu_)
 
-# save results
 with open(results_path + 'results.p', 'wb') as f:
     pickle.dump((train_loss , val_loss, acc, iu), f) 
 
