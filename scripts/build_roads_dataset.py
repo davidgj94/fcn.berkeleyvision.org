@@ -17,6 +17,7 @@ segmentation_class_raw_dir = dataset_dir + 'SegmentationClassRaw/'
 image_sets_dir = dataset_dir + 'ImageSets/Segmentation/'
 
 labeled_roads_dir = sys.argv[1]
+type_sat = sys.argv[2]
 
 if os.path.exists(_dataset_dir):
     shutil.rmtree(dataset_dir, ignore_errors=True)
@@ -40,7 +41,7 @@ idx = 0
 
 for road in roads:
     
-    for glob in road.glob('*/*/sat.png'):
+    for glob in road.glob('*/*/' + type_sat + '.png'):
         
         #road_mask_path = '/'.join(glob.parts[:-1]) + '/mask_road.png'
         disconn_mask_path = '/'.join(glob.parts[:-1]) + '/mask_disconn.png'
