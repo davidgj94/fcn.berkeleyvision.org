@@ -67,9 +67,17 @@ for img_name in indices_test:
     #img_name = glob.parts[-1]
     image_dir = png_images_dir + img_name + '.png'
     label_dir = segmentation_class_raw_dir + img_name + '.png'
-    
     img = Image.open(image_dir)
-    img.save(images_test_dir + img_name + '.png')
-    
     label = Image.open(label_dir)
-    label.save(labels_test_dir + img_name + '.png')
+    
+    width, height = img.size   # Get dimensions
+    bottom = np.arange(crop_height, height, crop_step)
+    top = bottom - crop_height
+    
+    for index, (b, t) in enumerate(zip(bottom, top)):
+        
+        cropped_img = img.crop((0, int(t), width, int(b)))
+        cropped_label = label.crop((0, int(t), width, int(b)))
+        new_name = '{}:{}.png'.format(os.path.splitext(img_name)[0], index)
+        cropped_img.save(images_test_dir + new_name)
+        cropped_label.save(labels_test_dir + new_name)
