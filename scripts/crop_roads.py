@@ -23,12 +23,20 @@ if os.path.exists(labels_cropped_dir):
     shutil.rmtree(labels_cropped_dir, ignore_errors=True)
 os.makedirs(labels_cropped_dir)
 
+if os.path.exists(images_test_dir):
+    shutil.rmtree(images_test_dir, ignore_errors=True)
+os.makedirs(images_test_dir)
+
+if os.path.exists(labels_test_dir):
+    shutil.rmtree(labels_test_dir, ignore_errors=True)
+os.makedirs(labels_test_dir)
+
 crop_height = int(sys.argv[1])
 crop_step = int(sys.argv[2])
 
 #p = Path(png_images_dir)
 split_train  = '{}/ImageSets/Segmentation/{}.txt'.format(dataset_dir, 'train')
-split_test  = '{}/ImageSets/Segmentation/{}.txt'.format(dataset_dir, 'test')
+split_test  = '{}/ImageSets/Segmentation/{}.txt'.format(dataset_dir, 'val')
 indices_train = open(split_train, 'r').read().splitlines()
 indices_test = open(split_test, 'r').read().splitlines()
 #images_globs = p.glob('*.png')
@@ -36,8 +44,8 @@ indices_test = open(split_test, 'r').read().splitlines()
 for img_name in indices_train:
     
     #img_name = glob.parts[-1]
-    image_dir = png_images_dir + img_name
-    label_dir = segmentation_class_raw_dir + img_name
+    image_dir = png_images_dir + img_name + '.png'
+    label_dir = segmentation_class_raw_dir + img_name + '.png'
     img = Image.open(image_dir)
     label = Image.open(label_dir)
     
@@ -57,11 +65,11 @@ for img_name in indices_train:
 for img_name in indices_test:
     
     #img_name = glob.parts[-1]
-    image_dir = png_images_dir + img_name
-    label_dir = segmentation_class_raw_dir + img_name
+    image_dir = png_images_dir + img_name + '.png'
+    label_dir = segmentation_class_raw_dir + img_name + '.png'
     
     img = Image.open(image_dir)
-    img.save(images_test_dir + img_name)
+    img.save(images_test_dir + img_name + '.png')
     
     label = Image.open(label_dir)
-    label.save(labels_test_dir + img_name)
+    label.save(labels_test_dir + img_name + '.png')

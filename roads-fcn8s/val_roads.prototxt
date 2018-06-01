@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "roads_layers"
     layer: "RoadsDataLayer"
-    param_str: "{\'voc_dir\': \'../data/roads/ROADS\', \'seed\': 1337, \'split\': \'val\', \'mean\': (109.31270171, 112.73650684, 107.62839719)}"
+    param_str: "{\'voc_dir\': \'../data/roads/ROADS/\', \'split\': \'val\', \'batch_size\': 20, \'mean\': (109.31270171, 112.73650684, 107.62839719)}"
   }
 }
 layer {
@@ -478,11 +478,11 @@ layer {
   bottom: "fc7"
   top: "score_fr_roads"
   param {
-    lr_mult: 100.0
+    lr_mult: 1.0
     decay_mult: 1.0
   }
   param {
-    lr_mult: 200.0
+    lr_mult: 2.0
     decay_mult: 0.0
   }
   convolution_param {
@@ -515,11 +515,11 @@ layer {
   bottom: "pool4"
   top: "score_pool4_roads"
   param {
-    lr_mult: 100.0
+    lr_mult: 1.0
     decay_mult: 1.0
   }
   param {
-    lr_mult: 200.0
+    lr_mult: 2.0
     decay_mult: 0.0
   }
   convolution_param {
@@ -573,11 +573,11 @@ layer {
   bottom: "pool3"
   top: "score_pool3_roads"
   param {
-    lr_mult: 100.0
+    lr_mult: 1.0
     decay_mult: 1.0
   }
   param {
-    lr_mult: 200.0
+    lr_mult: 2.0
     decay_mult: 0.0
   }
   convolution_param {

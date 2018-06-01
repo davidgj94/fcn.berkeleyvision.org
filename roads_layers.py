@@ -5,6 +5,7 @@ import random
 import skimage.io
 import matplotlib.pyplot as plt
 from itertools import islice
+from pathlib import Path
 
 def chunk(it, size):
     it = iter(it)
