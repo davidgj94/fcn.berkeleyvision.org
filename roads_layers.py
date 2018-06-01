@@ -4,6 +4,11 @@ from PIL import Image
 import random
 import skimage.io
 import matplotlib.pyplot as plt
+from itertools import islice
+
+def chunk(it, size):
+    it = iter(it)
+    return iter(lambda: tuple(islice(it, size)), ())
 
 class RoadsDataLayer(caffe.Layer):
     """
@@ -36,8 +41,8 @@ class RoadsDataLayer(caffe.Layer):
         self.voc_dir = params['voc_dir']
         self.split = params['split']
         self.mean = np.array(params['mean'])
-        self.random = params.get('randomize', True)
-        self.seed = params.get('seed', None)
+        #self.random = params.get('randomize', True)
+        #self.seed = params.get('seed', None)
 
         # two tops: data and label
         if len(top) != 2:
@@ -47,26 +52,36 @@ class RoadsDataLayer(caffe.Layer):
             raise Exception("Do not define a bottom.")
 
         # load indices for images and labels
-        split_f  = '{}/ImageSets/Segmentation/{}.txt'.format(self.voc_dir,
-                self.split)
-        self.indices = open(split_f, 'r').read().splitlines()
+        if 'train' not in self.split:
+            self.img_dir = self.voc_dir + 'TrainImages/'
+            self.label_dir = self.voc_dir + 'TrainLabels/'
+        else:
+            self.img_dir = self.voc_dir + 'TestImages/'
+            self.label_dir = self.voc_dir + 'TestLabels/'
+            
+        p = Path(self.img_dir)
+        indices = [glob.parts[-1] for glob in p.glob('*.png')]
+        self.batch_size = params["batch_size"]
+        self.batches = list(chunk(indices, self.batch_size))
         self.idx = 0
-        self.random = False
+        #self.random = False
 
         # make eval deterministic
-        if 'train' not in self.split:
-            self.random = False
+        #if 'train' not in self.split:
+        #   self.random = False
 
         # randomization: seed and pick
-        if self.random:
-            random.seed(self.seed)
-            self.idx = random.randint(0, len(self.indices)-1)
+        #if self.random:
+        #    random.seed(self.seed)
+        #    self.idx = random.randint(0, len(self.indices)-1)
 
 
     def reshape(self, bottom, top):
         # load image + label image pair
-        self.data = self.load_image(self.indices[self.idx])
-        self.label = self.load_label(self.indices[self.idx])
+        #self.data = self.load_image(self.indices[self.idx])
+        #self.label = self.load_label(self.indices[self.idx])
+        self.data = self.load_image(self.batches[self.idx])
+        self.label = self.load_label(self.batches[self.idx])
         # reshape tops to fit (leading 1 is for batch dimension)
         top[0].reshape(1, *self.data.shape)
         top[1].reshape(1, *self.label.shape)
@@ -76,21 +91,22 @@ class RoadsDataLayer(caffe.Layer):
         # assign output
         top[0].data[...] = self.data
         top[1].data[...] = self.label
+        self.idx += 1
 
         # pick next input
-        if self.random:
-            self.idx = random.randint(0, len(self.indices)-1)
-        else:
-            self.idx += 1
-            if self.idx == len(self.indices):
-                self.idx = 0
+        #if self.random:
+        #    self.idx = random.randint(0, len(self.indices)-1)
+        #else:
+        #    self.idx += 1
+        #    if self.idx == len(self.indices):
+        #        self.idx = 0
 
 
     def backward(self, top, propagate_down, bottom):
         pass
 
 
-    def load_image(self, idx):
+    def load_image(self, batch):
         """
         Load input image and preprocess for Caffe:
         - cast to float
@@ -98,20 +114,26 @@ class RoadsDataLayer(caffe.Layer):
         - subtract mean
         - transpose to channel x height x width order
         """
-        im = Image.open('{}/PNGImages/{}.png'.format(self.voc_dir, idx))
-        in_ = np.array(im, dtype=np.float32)
-        in_ = in_[:,:,::-1]
-        in_ -= self.mean
-        in_ = in_.transpose((2,0,1))
-        return in_
+        batch_result = np.zeros((self.batch_size, 3, 200, 257))
+        for img_idx in range(self.batch_size):
+            im = Image.open('{}/{}'.format(self.img_dir, batch[img_idx]))
+            in_ = np.array(im, dtype=np.float32)
+            in_ = in_[:,:,::-1]
+            in_ -= self.mean
+            in_ = in_.transpose((2,0,1))
+            batch_result[img_idx,:,:,:] = in_
+        return batch_result
 
 
-    def load_label(self, idx):
+    def load_label(self, batch):
         """
         Load label image as 1 x height x width integer array of label indices.
         The leading singleton dimension is required by the loss.
         """
-        im = Image.open('{}/SegmentationClassRaw/{}.png'.format(self.voc_dir, idx))
-        label = np.array(im, dtype=np.uint8)
-        label = label[np.newaxis, ...]
-        return label
+        batch_result = np.zeros((self.batch_size, 1, 200, 257))
+        for img_idx in range(self.batch_size):
+            im = Image.open('{}/{}'.format(self.label_dir, batch[img_idx]))
+            label = np.array(im, dtype=np.uint8)
+            label = label[np.newaxis, ...]
+            batch_result[img_idx,:,:,:] = label
+        return batch_result

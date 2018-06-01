@@ -7,11 +7,13 @@ from pathlib import Path
 import shutil
 
 _dataset_dir = '../data/roads/'
-dataset_dir = _dataset_dir + 'ROADS/' 
+dataset_dir = _dataset_dir + 'ROADS/'
 png_images_dir = dataset_dir + 'PNGImages/'
 segmentation_class_raw_dir = dataset_dir + 'SegmentationClassRaw/'
-images_cropped_dir = dataset_dir + 'CroppedImages/'
-labels_cropped_dir = dataset_dir + 'CroppedLabels/'
+images_cropped_dir = dataset_dir + 'TrainImages/'
+labels_cropped_dir = dataset_dir + 'TrainLabels/'
+images_test_dir = dataset_dir + 'TestImages/'
+labels_test_dir = dataset_dir + 'TestLabels/'
 
 if os.path.exists(images_cropped_dir):
     shutil.rmtree(images_cropped_dir, ignore_errors=True)
@@ -24,12 +26,16 @@ os.makedirs(labels_cropped_dir)
 crop_height = int(sys.argv[1])
 crop_step = int(sys.argv[2])
 
-p = Path(png_images_dir)
-images_globs = p.glob('*.png')
+#p = Path(png_images_dir)
+split_train  = '{}/ImageSets/Segmentation/{}.txt'.format(dataset_dir, 'train')
+split_test  = '{}/ImageSets/Segmentation/{}.txt'.format(dataset_dir, 'test')
+indices_train = open(split_train, 'r').read().splitlines()
+indices_test = open(split_test, 'r').read().splitlines()
+#images_globs = p.glob('*.png')
 
-for glob in images_globs:
+for img_name in indices_train:
     
-    img_name = glob.parts[-1]
+    #img_name = glob.parts[-1]
     image_dir = png_images_dir + img_name
     label_dir = segmentation_class_raw_dir + img_name
     img = Image.open(image_dir)
@@ -46,4 +52,16 @@ for glob in images_globs:
         new_name = '{}:{}.png'.format(os.path.splitext(img_name)[0], index)
         cropped_img.save(images_cropped_dir + new_name)
         cropped_label.save(labels_cropped_dir + new_name)
-        
+ 
+
+for img_name in indices_test:
+    
+    #img_name = glob.parts[-1]
+    image_dir = png_images_dir + img_name
+    label_dir = segmentation_class_raw_dir + img_name
+    
+    img = Image.open(image_dir)
+    img.save(images_test_dir + img_name)
+    
+    label = Image.open(label_dir)
+    label.save(labels_test_dir + img_name)
