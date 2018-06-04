@@ -54,7 +54,7 @@ class RoadsDataLayer(caffe.Layer):
             raise Exception("Do not define a bottom.")
 
         # load indices for images and labels
-        if 'train' not in self.split:
+        if 'train' in self.split:
             self.img_dir = self.voc_dir + 'TrainImages/'
             self.label_dir = self.voc_dir + 'TrainLabels/'
         else:
@@ -85,8 +85,12 @@ class RoadsDataLayer(caffe.Layer):
         self.data = self.load_image(self.batches[self.idx])
         self.label = self.load_label(self.batches[self.idx])
         # reshape tops to fit (leading 1 is for batch dimension)
-        top[0].reshape(*self.data.shape)
-        top[1].reshape(*self.label.shape)
+        if 'train' in self.split:
+            top[0].reshape(*self.data.shape)
+            top[1].reshape(*self.label.shape)
+        else:
+            top[0].reshape(1,*self.data.shape)
+            top[1].reshape(1,*self.label.shape)
 
 
     def forward(self, bottom, top):
@@ -116,15 +120,23 @@ class RoadsDataLayer(caffe.Layer):
         - subtract mean
         - transpose to channel x height x width order
         """
-        batch_result = np.zeros((len(batch), 3, 200, 257))
-        for img_idx in range(self.batch_size):
-            im = Image.open('{}/{}'.format(self.img_dir, batch[img_idx]))
+        if 'train' in self.split:
+            batch_result = np.zeros((len(batch), 3, 200, 257))
+            for img_idx in range(len(batch)):
+                im = Image.open('{}/{}'.format(self.img_dir, batch[img_idx]))
+                in_ = np.array(im, dtype=np.float32)
+                in_ = in_[:,:,::-1]
+                in_ -= self.mean
+                in_ = in_.transpose((2,0,1))
+                batch_result[img_idx,:,:,:] = in_
+            return batch_result
+        else:
+            im = Image.open('{}/{}'.format(self.img_dir, batch[0]))
             in_ = np.array(im, dtype=np.float32)
             in_ = in_[:,:,::-1]
             in_ -= self.mean
             in_ = in_.transpose((2,0,1))
-            batch_result[img_idx,:,:,:] = in_
-        return batch_result
+            return in_
 
 
     def load_label(self, batch):
@@ -132,10 +144,17 @@ class RoadsDataLayer(caffe.Layer):
         Load label image as 1 x height x width integer array of label indices.
         The leading singleton dimension is required by the loss.
         """
-        batch_result = np.zeros((len(batch), 1, 200, 257))
-        for img_idx in range(self.batch_size):
-            im = Image.open('{}/{}'.format(self.label_dir, batch[img_idx]))
+        if 'train' in self.split:
+            batch_result = np.zeros((len(batch), 1, 200, 257))
+            for img_idx in range(len(batch)):
+                im = Image.open('{}/{}'.format(self.label_dir, batch[img_idx]))
+                label = np.array(im, dtype=np.uint8)
+                label = label[np.newaxis, ...]
+                batch_result[img_idx,:,:,:] = label
+            return batch_result
+        else:
+            im = Image.open('{}/{}'.format(self.label_dir, batch[0]))
             label = np.array(im, dtype=np.uint8)
             label = label[np.newaxis, ...]
-            batch_result[img_idx,:,:,:] = label
-        return batch_result
+            return label
+

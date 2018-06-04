@@ -27,17 +27,17 @@ os.makedirs(png_images_dir)
 os.makedirs(segmentation_class_dir)
 os.makedirs(segmentation_class_raw_dir)
 os.makedirs(image_sets_dir)
-os.mknod(image_sets_dir + 'train.txt')
-os.mknod(image_sets_dir + 'val.txt')
-os.mknod(image_sets_dir + 'trainval.txt')
+#os.mknod(image_sets_dir + 'train.txt')
+#os.mknod(image_sets_dir + 'val.txt')
+#os.mknod(image_sets_dir + 'trainval.txt')
     
 p = Path(labeled_roads_dir)
 roads = get_subdirs(p)
-train_split = 0.7
+#train_split = 0.7
 
-train_size = 0
-val_size = 0
-idx = 0
+#train_size = 0
+#val_size = 0
+#idx = 0
 
 for road in roads:
     
@@ -71,20 +71,20 @@ for road in roads:
         if new_name == '39.273155_-3.446121:sec_3:sec_3_1':
             continue
 
-        idx += 1
+        #idx += 1
         
-        if idx % 3 != 0:
-            train_size += 1
-            desc_txt = 'train.txt'
-        else:
-            val_size += 1
-            desc_txt = 'val.txt'
+        #if idx % 3 != 0:
+            #train_size += 1
+            #desc_txt = 'train.txt'
+        #else:
+            #val_size += 1
+            #desc_txt = 'val.txt'
             
-        with open(image_sets_dir + desc_txt, 'a') as txt:
-            txt.write(new_name + '\n')
+        #with open(image_sets_dir + desc_txt, 'a') as txt:
+            #txt.write(new_name + '\n')
 
-        with open(image_sets_dir + 'trainval.txt', 'a') as txt:
-            txt.write(new_name + '\n')
+        #with open(image_sets_dir + 'trainval.txt', 'a') as txt:
+            #txt.write(new_name + '\n')
         
         shutil.copy(sat_path, png_images_dir + new_name + '.png')
         new_dir = '{}/{}/'.format(segmentation_class_dir, new_name)
@@ -92,6 +92,6 @@ for road in roads:
         shutil.copy(disconn_mask_path, new_dir + 'disconn.png')
         shutil.copy(other_mask_path, new_dir + 'other.png')
     
-print('train_size: {}\n'.format(str(train_size)))
-print('val_size: {}\n'.format(str(val_size)))
-print('trainval_size: {}\n'.format(str(train_size + val_size)))
+#print('train_size: {}\n'.format(str(train_size)))
+#print('val_size: {}\n'.format(str(val_size)))
+#print('trainval_size: {}\n'.format(str(train_size + val_size)))
