@@ -23,23 +23,15 @@ if os.path.exists(labels_cropped_dir):
     shutil.rmtree(labels_cropped_dir, ignore_errors=True)
 os.makedirs(labels_cropped_dir)
 
-#if os.path.exists(images_test_dir):
-    #shutil.rmtree(images_test_dir, ignore_errors=True)
-#os.makedirs(images_test_dir)
-
-#if os.path.exists(labels_test_dir):
-    #shutil.rmtree(labels_test_dir, ignore_errors=True)
-#os.makedirs(labels_test_dir)
+if os.path.exists(limage_sets_dir):
+    shutil.rmtree(image_sets_dir, ignore_errors=True)
+os.makedirs(image_sets_dir)
+os.mknod(image_sets_dir + 'train.txt')
+os.mknod(image_sets_dir + 'val.txt')
+os.mknod(image_sets_dir + 'trainval.txt')
 
 crop_height = int(sys.argv[1])
 crop_step = int(sys.argv[2])
-
-#p = Path(png_images_dir)
-#split_train  = '{}/ImageSets/Segmentation/{}.txt'.format(dataset_dir, 'train')
-#split_test  = '{}/ImageSets/Segmentation/{}.txt'.format(dataset_dir, 'val')
-#indices_train = open(split_train, 'r').read().splitlines()
-#indices_test = open(split_test, 'r').read().splitlines()
-#images_globs = p.glob('*.png')
 
 p = Path(png_images_dir)
 indices = [glob.parts[-1] for glob in p.glob('*.png')]

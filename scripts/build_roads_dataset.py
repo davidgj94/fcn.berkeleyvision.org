@@ -26,24 +26,14 @@ os.makedirs(dataset_dir)
 os.makedirs(png_images_dir)
 os.makedirs(segmentation_class_dir)
 os.makedirs(segmentation_class_raw_dir)
-os.makedirs(image_sets_dir)
-#os.mknod(image_sets_dir + 'train.txt')
-#os.mknod(image_sets_dir + 'val.txt')
-#os.mknod(image_sets_dir + 'trainval.txt')
     
 p = Path(labeled_roads_dir)
 roads = get_subdirs(p)
-#train_split = 0.7
-
-#train_size = 0
-#val_size = 0
-#idx = 0
 
 for road in roads:
     
     for glob in road.glob('*/*/' + type_sat + '.png'):
         
-        #road_mask_path = '/'.join(glob.parts[:-1]) + '/mask_road.png'
         disconn_mask_path = '/'.join(glob.parts[:-1]) + '/mask_disconn.png'
         other_mask_path = '/'.join(glob.parts[:-1]) + '/mask_other.png'
         sat_path = '/'.join(glob.parts)
@@ -53,7 +43,6 @@ for road in roads:
             print 'Masks incompletas en {}'.format(sat_path)
             continue
         
-        #road_mask_length, road_mask_width = np.array(Image.open(road_mask_path)).shape[:-1]
         disconn_mask_length, disconn_mask_width = np.array(Image.open(disconn_mask_path)).shape[:-1]
         other_mask_length, other_mask_width = np.array(Image.open(other_mask_path)).shape[:-1]
         sat_length, sat_width = np.array(Image.open(sat_path)).shape[:-1]
@@ -70,21 +59,6 @@ for road in roads:
         
         if new_name == '39.273155_-3.446121:sec_3:sec_3_1':
             continue
-
-        #idx += 1
-        
-        #if idx % 3 != 0:
-            #train_size += 1
-            #desc_txt = 'train.txt'
-        #else:
-            #val_size += 1
-            #desc_txt = 'val.txt'
-            
-        #with open(image_sets_dir + desc_txt, 'a') as txt:
-            #txt.write(new_name + '\n')
-
-        #with open(image_sets_dir + 'trainval.txt', 'a') as txt:
-            #txt.write(new_name + '\n')
         
         shutil.copy(sat_path, png_images_dir + new_name + '.png')
         new_dir = '{}/{}/'.format(segmentation_class_dir, new_name)
@@ -92,6 +66,3 @@ for road in roads:
         shutil.copy(disconn_mask_path, new_dir + 'disconn.png')
         shutil.copy(other_mask_path, new_dir + 'other.png')
     
-#print('train_size: {}\n'.format(str(train_size)))
-#print('val_size: {}\n'.format(str(val_size)))
-#print('trainval_size: {}\n'.format(str(train_size + val_size)))

@@ -25,7 +25,7 @@ def compute_hist(net, save_dir, dataset, layer='score', gt='label'):
 
         if save_dir:
             
-            sat_path = '/home/davidgj/projects_v2/fcn.berkeleyvision.org/data/roads/ROADS/PNGImages/{}.png'.format(idx)
+            sat_path = '/home/davidgj/projects_v2/fcn.berkeleyvision.org/data/roads/ROADS/CroppedImages/{}.png'.format(idx)
             sat = Image.open(sat_path)
             score = net.blobs["score"].data[...][0,:,:,:]
             score = score.transpose((1,2,0))

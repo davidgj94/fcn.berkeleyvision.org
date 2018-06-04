@@ -11,12 +11,12 @@ def conv_relu(bottom, nout, ks=3, stride=1, pad=1):
 def max_pool(bottom, ks=2, stride=2):
     return L.Pooling(bottom, pool=P.Pooling.MAX, kernel_size=ks, stride=stride)
 
-def fcn_roads(split):
+def fcn_roads(split, batch_size):
     
     n = caffe.NetSpec()
     
     pydata_params = dict(split=split, mean=(109.31270171, 112.73650684, 107.62839719), voc_dir='../data/roads/ROADS/', 
-                         batch_size=1)
+                         batch_size=batch_size)
     pylayer = 'RoadsDataLayer'
     
     num_classes = 3;
@@ -102,10 +102,10 @@ def make_nets():
     
         
     with open('train_roads.prototxt', 'w') as f:
-        f.write(str(fcn_roads('train')))
+        f.write(str(fcn_roads('train', 10)))
 
     with open('val_roads.prototxt', 'w') as f:
-        f.write(str(fcn_roads('val')))
+        f.write(str(fcn_roads('val', 1)))
 
 if __name__ == '__main__':
     make_nets()
