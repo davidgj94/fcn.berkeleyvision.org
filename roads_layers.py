@@ -6,6 +6,7 @@ import skimage.io
 import matplotlib.pyplot as plt
 from itertools import islice
 from pathlib import Path
+import pdb
 
 def chunk(it, size):
     it = iter(it)
@@ -84,8 +85,8 @@ class RoadsDataLayer(caffe.Layer):
         self.data = self.load_image(self.batches[self.idx])
         self.label = self.load_label(self.batches[self.idx])
         # reshape tops to fit (leading 1 is for batch dimension)
-        top[0].reshape(1, *self.data.shape)
-        top[1].reshape(1, *self.label.shape)
+        top[0].reshape(*self.data.shape)
+        top[1].reshape(*self.label.shape)
 
 
     def forward(self, bottom, top):
@@ -115,7 +116,7 @@ class RoadsDataLayer(caffe.Layer):
         - subtract mean
         - transpose to channel x height x width order
         """
-        batch_result = np.zeros((self.batch_size, 3, 200, 257))
+        batch_result = np.zeros((len(batch), 3, 200, 257))
         for img_idx in range(self.batch_size):
             im = Image.open('{}/{}'.format(self.img_dir, batch[img_idx]))
             in_ = np.array(im, dtype=np.float32)
@@ -131,7 +132,7 @@ class RoadsDataLayer(caffe.Layer):
         Load label image as 1 x height x width integer array of label indices.
         The leading singleton dimension is required by the loss.
         """
-        batch_result = np.zeros((self.batch_size, 1, 200, 257))
+        batch_result = np.zeros((len(batch), 1, 200, 257))
         for img_idx in range(self.batch_size):
             im = Image.open('{}/{}'.format(self.label_dir, batch[img_idx]))
             label = np.array(im, dtype=np.uint8)
