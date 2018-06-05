@@ -54,8 +54,8 @@ else:
 val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str)
 train = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/train.txt', dtype=str)
 
-niter = train.shape[0]
-nepoch = 5
+niter = 82
+nepoch = 2
 
 train_loss = []
 val_loss = []
@@ -91,58 +91,56 @@ def get_class_score(scores, idx):
 
 num_epochs = range(len(train_loss))
 
+# Loss
+plt.plot(num_epochs, train_loss)
+plt.plot(num_epochs, val_loss)
+plt.grid()
+plt.legend(['Train', 'Val'])
+plt.title('Train/Val loss')
+plt.show()
 
+# Per-Class accuracy
+plt.plot(num_epochs, get_class_score(train_acc, 0))
+plt.plot(num_epochs, get_class_score(val_acc, 0))
+plt.title('Train/Val Class 0 Accuracy')
+plt.legend(['Train', 'Val'])
+plt.grid()
+plt.show()
 
-## Loss
-#plt.plot(num_epochs, train_loss)
-#plt.plot(num_epochs, val_loss)
-#plt.grid()
-#plt.legend(['Train', 'Val'])
-#plt.title('Train/Val loss')
-#plt.show()
+plt.plot(num_epochs, get_class_score(train_acc, 1))
+plt.plot(num_epochs, get_class_score(val_acc, 1))
+plt.title('Train/Val Class 1 Accuracy')
+plt.legend(['Train', 'Val'])
+plt.grid()
+plt.show()
 
-## Per-Class accuracy
-#plt.plot(num_epochs, get_class_score(train_acc, 0))
-#plt.plot(num_epochs, get_class_score(val_acc, 0))
-#plt.title('Train/Val Class 0 Accuracy')
-#plt.legend(['Train', 'Val'])
-#plt.grid()
-#plt.show()
+plt.plot(num_epochs, get_class_score(train_acc, 2))
+plt.plot(num_epochs, get_class_score(val_acc, 2))
+plt.title('Train/Val Class 2 Accuracy')
+plt.legend(['Train', 'Val'])
+plt.grid()
+plt.show()
 
-#plt.plot(num_epochs, get_class_score(train_acc, 1))
-#plt.plot(num_epochs, get_class_score(val_acc, 1))
-#plt.title('Train/Val Class 1 Accuracy')
-#plt.legend(['Train', 'Val'])
-#plt.grid()
-#plt.show()
+# Per-Class IU
+plt.plot(num_epochs, get_class_score(train_iu, 0))
+plt.plot(num_epochs, get_class_score(val_iu, 0))
+plt.title('Train/Val Class 0 IU')
+plt.legend(['Train', 'Val'])
+plt.grid()
+plt.show()
 
-#plt.plot(num_epochs, get_class_score(train_acc, 2))
-#plt.plot(num_epochs, get_class_score(val_acc, 2))
-#plt.title('Train/Val Class 2 Accuracy')
-#plt.legend(['Train', 'Val'])
-#plt.grid()
-#plt.show()
+plt.plot(num_epochs, get_class_score(train_iu, 1))
+plt.plot(num_epochs, get_class_score(val_iu, 1))
+plt.title('Train/Val Class 1 IU')
+plt.legend(['Train', 'Val'])
+plt.grid()
+plt.show()
 
-## Per-Class IU
-#plt.plot(num_epochs, get_class_score(train_iu, 0))
-#plt.plot(num_epochs, get_class_score(val_iu, 0))
-#plt.title('Train/Val Class 0 IU')
-#plt.legend(['Train', 'Val'])
-#plt.grid()
-#plt.show()
-
-#plt.plot(num_epochs, get_class_score(train_iu, 1))
-#plt.plot(num_epochs, get_class_score(val_iu, 1))
-#plt.title('Train/Val Class 1 IU')
-#plt.legend(['Train', 'Val'])
-#plt.grid()
-#plt.show()
-
-#plt.plot(num_epochs, get_class_score(train_iu, 2))
-#plt.plot(num_epochs, get_class_score(val_iu, 2))
-#plt.title('Train/Val Class 2 IU')
-#plt.legend(['Train', 'Val'])
-#plt.grid()
-#plt.show()
+plt.plot(num_epochs, get_class_score(train_iu, 2))
+plt.plot(num_epochs, get_class_score(val_iu, 2))
+plt.title('Train/Val Class 2 IU')
+plt.legend(['Train', 'Val'])
+plt.grid()
+plt.show()
 
 

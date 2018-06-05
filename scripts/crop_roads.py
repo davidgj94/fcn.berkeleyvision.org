@@ -23,7 +23,7 @@ if os.path.exists(labels_cropped_dir):
     shutil.rmtree(labels_cropped_dir, ignore_errors=True)
 os.makedirs(labels_cropped_dir)
 
-if os.path.exists(limage_sets_dir):
+if os.path.exists(image_sets_dir):
     shutil.rmtree(image_sets_dir, ignore_errors=True)
 os.makedirs(image_sets_dir)
 os.mknod(image_sets_dir + 'train.txt')
@@ -40,10 +40,11 @@ train_split = 0.7
 train_size = 0
 val_size = 0
 idx = 0
+
 for img_name in indices:
     
-    image_dir = png_images_dir + img_name + '.png'
-    label_dir = segmentation_class_raw_dir + img_name + '.png'
+    image_dir = png_images_dir + img_name 
+    label_dir = segmentation_class_raw_dir + img_name 
     img = Image.open(image_dir)
     label = Image.open(label_dir)
     
@@ -55,7 +56,7 @@ for img_name in indices:
         
         cropped_img = img.crop((0, int(t), width, int(b)))
         cropped_label = label.crop((0, int(t), width, int(b)))
-        new_name = '{}:{}.png'.format(os.path.splitext(img_name)[0], index)
+        new_name = '{}:{}'.format(os.path.splitext(img_name)[0], index)
         
         idx += 1
         
@@ -72,8 +73,8 @@ for img_name in indices:
         with open(image_sets_dir + 'trainval.txt', 'a') as txt:
             txt.write(new_name + '\n')
             
-        cropped_img.save(images_cropped_dir + new_name)
-        cropped_label.save(labels_cropped_dir + new_name)
+        cropped_img.save(images_cropped_dir + new_name + '.png')
+        cropped_label.save(labels_cropped_dir + new_name + '.png')
         
 shutil.rmtree(png_images_dir, ignore_errors=True)
 shutil.rmtree(segmentation_class_raw_dir, ignore_errors=True)

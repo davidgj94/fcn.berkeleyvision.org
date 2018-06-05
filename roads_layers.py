@@ -55,7 +55,7 @@ class RoadsDataLayer(caffe.Layer):
         self.label_dir = self.voc_dir + 'CroppedLabels/'
 
         split_f  = '{}/ImageSets/Segmentation/{}.txt'.format(self.voc_dir, self.split)
-        self.indices = open(split_f, 'r').read().splitlines()
+        indices = open(split_f, 'r').read().splitlines()
         self.batch_size = params["batch_size"]
         self.batches = list(chunk(indices, self.batch_size))
         self.idx = 0
@@ -77,7 +77,7 @@ class RoadsDataLayer(caffe.Layer):
         top[0].data[...] = self.data
         top[1].data[...] = self.label
         
-        if self.idx == len(self.batches):
+        if self.idx == (len(self.batches) - 1):
             self.idx = 0
         else:
             self.idx += 1
@@ -97,7 +97,7 @@ class RoadsDataLayer(caffe.Layer):
         """
         batch_result = np.zeros((len(batch), 3, 200, 257))
         for img_idx in range(len(batch)):
-            im = Image.open('{}/{}'.format(self.img_dir, batch[img_idx]))
+            im = Image.open('{}/{}.png'.format(self.img_dir, batch[img_idx]))
             in_ = np.array(im, dtype=np.float32)
             in_ = in_[:,:,::-1]
             in_ -= self.mean
@@ -113,7 +113,7 @@ class RoadsDataLayer(caffe.Layer):
         """
         batch_result = np.zeros((len(batch), 1, 200, 257))
         for img_idx in range(len(batch)):
-            im = Image.open('{}/{}'.format(self.label_dir, batch[img_idx]))
+            im = Image.open('{}/{}.png'.format(self.label_dir, batch[img_idx]))
             label = np.array(im, dtype=np.uint8)
             label = label[np.newaxis, ...]
             batch_result[img_idx,:,:,:] = label

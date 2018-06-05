@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "roads_layers"
     layer: "RoadsDataLayer"
-    param_str: "{\'voc_dir\': \'../data/roads/ROADS/\', \'split\': \'train\', \'batch_size\': 1, \'mean\': (109.31270171, 112.73650684, 107.62839719)}"
+    param_str: "{\'voc_dir\': \'../data/roads/ROADS/\', \'split\': \'train\', \'batch_size\': 10, \'mean\': (109.31270171, 112.73650684, 107.62839719)}"
   }
 }
 layer {
