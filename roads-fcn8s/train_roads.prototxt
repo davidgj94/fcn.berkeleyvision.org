@@ -510,9 +510,24 @@ layer {
   }
 }
 layer {
+  name: "scale_pool4"
+  type: "Scale"
+  bottom: "pool4"
+  top: "scale_pool4"
+  param {
+    lr_mult: 0.0
+  }
+  scale_param {
+    filler {
+      type: "constant"
+      value: 0.00999999977648
+    }
+  }
+}
+layer {
   name: "score_pool4_roads"
   type: "Convolution"
-  bottom: "pool4"
+  bottom: "scale_pool4"
   top: "score_pool4_roads"
   param {
     lr_mult: 1.0
@@ -568,9 +583,24 @@ layer {
   }
 }
 layer {
+  name: "scale_pool3"
+  type: "Scale"
+  bottom: "pool3"
+  top: "scale_pool3"
+  param {
+    lr_mult: 0.0
+  }
+  scale_param {
+    filler {
+      type: "constant"
+      value: 9.99999974738e-05
+    }
+  }
+}
+layer {
   name: "score_pool3_roads"
   type: "Convolution"
-  bottom: "pool3"
+  bottom: "scale_pool3"
   top: "score_pool3_roads"
   param {
     lr_mult: 1.0

@@ -71,6 +71,7 @@ def fcn_roads(split, batch_size):
     
     # scale pool4 skip for compatibility
     n.scale_pool4 = L.Scale(n.pool4, filler=dict(type='constant', value=0.01), param=[dict(lr_mult=0)])
+    #n.scale_pool4 = L.Scale(n.pool4, filler=dict(type='constant', value=1), param=[dict(lr_mult=0)])
     
     n.score_pool4_roads = L.Convolution(n.scale_pool4, 
         num_output=num_classes, 
@@ -90,7 +91,8 @@ def fcn_roads(split, batch_size):
         
     # scale pool3 skip for compatibility
     n.scale_pool3 = L.Scale(n.pool3, filler=dict(type='constant', value=0.0001), param=[dict(lr_mult=0)])
-    
+    #n.scale_pool3 = L.Scale(n.pool3, filler=dict(type='constant', value=1), param=[dict(lr_mult=0)])
+
     n.score_pool3_roads = L.Convolution(n.scale_pool3, 
         num_output=num_classes, 
         kernel_size=1, 
