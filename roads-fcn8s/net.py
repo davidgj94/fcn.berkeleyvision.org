@@ -19,7 +19,7 @@ def fcn_roads(split, batch_size):
                          batch_size=batch_size)
     pylayer = 'RoadsDataLayer'
     
-    num_classes = 3;
+    num_classes = 2;
         
     n.data, n.label = L.Python(module='roads_layers', layer=pylayer,
             ntop=2, param_str=str(pydata_params))
@@ -57,15 +57,26 @@ def fcn_roads(split, batch_size):
     # score
     lr_mult_score = 1
     decay_mult_score = 1
-    n.score_fr_roads = L.Convolution(n.drop7, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
+
+    n.score_fr_roads = L.Convolution(n.drop7, 
+        num_output=num_classes, 
+        kernel_size=1, 
+        pad=0, 
+        weight_filler=dict(type='xavier'),
         param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
     
     n.upscore2_roads = L.Deconvolution(n.score_fr_roads,
-        convolution_param=dict(num_output=num_classes, kernel_size=4, stride=2,
-            bias_term=False),
+        convolution_param=dict(num_output=num_classes, kernel_size=4, stride=2, bias_term=False),
         param=[dict(lr_mult=0)])
-
-    n.score_pool4_roads = L.Convolution(n.pool4, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
+    
+    # scale pool4 skip for compatibility
+    n.scale_pool4 = L.Scale(n.pool4, filler=dict(type='constant', value=0.01), param=[dict(lr_mult=0)])
+    
+    n.score_pool4_roads = L.Convolution(n.scale_pool4, 
+        num_output=num_classes, 
+        kernel_size=1, 
+        pad=0, 
+        weight_filler=dict(type='xavier'), 
         param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
     
     n.score_pool4c_roads = crop(n.score_pool4_roads, n.upscore2_roads)
@@ -74,11 +85,17 @@ def fcn_roads(split, batch_size):
             operation=P.Eltwise.SUM)
     
     n.upscore_pool4_roads = L.Deconvolution(n.fuse_pool4_roads,
-        convolution_param=dict(num_output=num_classes, kernel_size=4, stride=2,
-            bias_term=False),
+        convolution_param=dict(num_output=num_classes, kernel_size=4, stride=2, bias_term=False),
         param=[dict(lr_mult=0)])
-
-    n.score_pool3_roads = L.Convolution(n.pool3, num_output=num_classes, kernel_size=1, pad=0, weight_filler=dict(type='xavier'),
+        
+    # scale pool3 skip for compatibility
+    n.scale_pool3 = L.Scale(n.pool3, filler=dict(type='constant', value=0.0001), param=[dict(lr_mult=0)])
+    
+    n.score_pool3_roads = L.Convolution(n.scale_pool3, 
+        num_output=num_classes, 
+        kernel_size=1, 
+        pad=0, 
+        weight_filler=dict(type='xavier'), 
         param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
     
     n.score_pool3c_roads = crop(n.score_pool3_roads, n.upscore_pool4_roads)
@@ -91,6 +108,7 @@ def fcn_roads(split, batch_size):
             bias_term=False),
         param=[dict(lr_mult=0)])
 
+    # final score
     n.score = crop(n.upscore8_roads, n.data)
     n.loss = L.SoftmaxWithLoss(n.score, n.label,
             loss_param=dict(normalize=False, ignore_label=255))

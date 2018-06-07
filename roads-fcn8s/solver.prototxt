@@ -11,9 +11,9 @@ base_lr: 1e-10
 # high momentum
 momentum: 0.9
 # no gradient accumulation
-iter_size: 3
+iter_size: 1
 max_iter: 100000
 weight_decay: 0.0005
 snapshot: 82
-snapshot_prefix: "snapshot/prueba_batch_size_3"
+snapshot_prefix: "snapshot/prueba_2class"
 test_initialization: false
