@@ -520,7 +520,7 @@ layer {
   scale_param {
     filler {
       type: "constant"
-      value: 0.00999999977648
+      value: 1.0
     }
   }
 }
@@ -593,7 +593,7 @@ layer {
   scale_param {
     filler {
       type: "constant"
-      value: 9.99999974738e-05
+      value: 1.0
     }
   }
 }
@@ -641,29 +641,102 @@ layer {
   }
 }
 layer {
-  name: "upscore8_roads"
+  name: "upscore_pool3_roads"
   type: "Deconvolution"
   bottom: "fuse_pool3_roads"
-  top: "upscore8_roads"
+  top: "upscore_pool3_roads"
   param {
     lr_mult: 0.0
   }
   convolution_param {
     num_output: 2
     bias_term: false
-    kernel_size: 16
-    stride: 8
+    kernel_size: 4
+    stride: 2
+  }
+}
+layer {
+  name: "scale_pool2"
+  type: "Scale"
+  bottom: "pool2"
+  top: "scale_pool2"
+  param {
+    lr_mult: 0.0
+  }
+  scale_param {
+    filler {
+      type: "constant"
+      value: 1.0
+    }
+  }
+}
+layer {
+  name: "score_pool2_roads"
+  type: "Convolution"
+  bottom: "scale_pool2"
+  top: "score_pool2_roads"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 2
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_pool2c_roads"
+  type: "Crop"
+  bottom: "score_pool2_roads"
+  bottom: "upscore_pool3_roads"
+  top: "score_pool2c_roads"
+  crop_param {
+    axis: 2
+    offset: 17
+  }
+}
+layer {
+  name: "fuse_pool2_roads"
+  type: "Eltwise"
+  bottom: "upscore_pool3_roads"
+  bottom: "score_pool2c_roads"
+  top: "fuse_pool2_roads"
+  eltwise_param {
+    operation: SUM
+  }
+}
+layer {
+  name: "upscore4_roads"
+  type: "Deconvolution"
+  bottom: "fuse_pool2_roads"
+  top: "upscore4_roads"
+  param {
+    lr_mult: 0.0
+  }
+  convolution_param {
+    num_output: 2
+    bias_term: false
+    kernel_size: 8
+    stride: 4
   }
 }
 layer {
   name: "score"
   type: "Crop"
-  bottom: "upscore8_roads"
+  bottom: "upscore4_roads"
   bottom: "data"
   top: "score"
   crop_param {
     axis: 2
-    offset: 31
+    offset: 33
   }
 }
 layer {
