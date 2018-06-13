@@ -1,8 +1,9 @@
 from __future__ import division
 import caffe
 import numpy as np
+import pdb
 
-def transplant(new_net, net, suffix=''):
+def transplant(new_net, net):
     """
     Transfer weights by copying matching parameters, coercing parameters of
     incompatible shape, and dropping unmatched parameters.
@@ -15,21 +16,32 @@ def transplant(new_net, net, suffix=''):
 
     Both  `net` to `new_net` arguments must be instantiated `caffe.Net`s.
     """
+    
     for p in net.params:
-        #p_new = p + suffix
-        if p not in new_net.params:
+        if p + '_roads' in new_net.params:
+            suffix = '_roads'
+        else if p + '_rec' in new_net.params:
+            suffix = '_rec'
+        else if p in new_net.params:
+            suffix = ''
+        else:
             print 'dropping', p
             continue
-        p_new = p
+        p_new = p + suffix
         for i in range(len(net.params[p])):
             if i > (len(new_net.params[p_new]) - 1):
                 print 'dropping', p, i
                 break
-            if net.params[p][i].data.shape != new_net.params[p_new][i].data.shape:
-                print 'coercing', p, i, 'from', net.params[p][i].data.shape, 'to', new_net.params[p_new][i].data.shape
+                
+            if net.params[p][i].data.shape == (3,3) and new_net.params[p_new][i].data.shape == (7,1):
+                print 'lengthening', p, i, 'from', net.params[p][i].data.shape, 'to', new_net.params[p_new][i].data.shape
+                kernel = net.params[p][i].data[...]
+                pdb.set_trace()
+                kernel_new = np.vstack((kernel[0:1,1].reshape(-,1), kernel[:,1].reshape(-1,1), kernel[2:1:-1,1].reshape(-1,1)))
+                new_net.params[p_new][i].data[...] = kernel_new
             else:
                 print 'copying', p, ' -> ', p_new, i
-            new_net.params[p_new][i].data.flat = net.params[p][i].data.flat
+                new_net.params[p_new][i].data.flat = net.params[p][i].data.flat
 
 def upsample_filt(size):
     """
