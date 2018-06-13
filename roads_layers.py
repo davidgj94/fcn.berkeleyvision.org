@@ -51,7 +51,7 @@ class RoadsDataLayer(caffe.Layer):
         if len(bottom) != 0:
             raise Exception("Do not define a bottom.")
         
-        self.img_dir = self.voc_dir + 'CroppedImages/'
+        self.img_dir = self.voc_dir + 'CroppedImagesEq/'
         self.label_dir = self.voc_dir + 'CroppedLabels/'
 
         split_f  = '{}/ImageSets/Segmentation/{}.txt'.format(self.voc_dir, self.split)

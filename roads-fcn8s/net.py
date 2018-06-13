@@ -19,7 +19,7 @@ def fcn_roads(split, batch_size):
                          batch_size=batch_size)
     pylayer = 'RoadsDataLayer'
     
-    num_classes = 2;
+    num_classes = 4;
         
     n.data, n.label = L.Python(module='roads_layers', layer=pylayer,
             ntop=2, param_str=str(pydata_params))

@@ -486,7 +486,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 2
+    num_output: 4
     pad: 0
     kernel_size: 1
     weight_filler {
@@ -503,7 +503,7 @@ layer {
     lr_mult: 0.0
   }
   convolution_param {
-    num_output: 2
+    num_output: 4
     bias_term: false
     kernel_size: 4
     stride: 2
@@ -538,7 +538,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 2
+    num_output: 4
     pad: 0
     kernel_size: 1
     weight_filler {
@@ -576,7 +576,7 @@ layer {
     lr_mult: 0.0
   }
   convolution_param {
-    num_output: 2
+    num_output: 4
     bias_term: false
     kernel_size: 4
     stride: 2
@@ -611,7 +611,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 2
+    num_output: 4
     pad: 0
     kernel_size: 1
     weight_filler {
@@ -649,7 +649,7 @@ layer {
     lr_mult: 0.0
   }
   convolution_param {
-    num_output: 2
+    num_output: 4
     bias_term: false
     kernel_size: 4
     stride: 2
@@ -684,7 +684,7 @@ layer {
     decay_mult: 0.0
   }
   convolution_param {
-    num_output: 2
+    num_output: 4
     pad: 0
     kernel_size: 1
     weight_filler {
@@ -722,7 +722,7 @@ layer {
     lr_mult: 0.0
   }
   convolution_param {
-    num_output: 2
+    num_output: 4
     bias_term: false
     kernel_size: 8
     stride: 4
