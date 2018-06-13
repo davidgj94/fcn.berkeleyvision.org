@@ -30,8 +30,10 @@ os.mknod(image_sets_dir + 'train.txt')
 os.mknod(image_sets_dir + 'val.txt')
 os.mknod(image_sets_dir + 'trainval.txt')
 
-crop_height = int(sys.argv[1])
-crop_step = int(sys.argv[2])
+stride = int(sys.argv[1])
+mult = int(sys.argv[2])
+crop_height = stride * mult
+crop_step = int(sys.argv[3])
 
 p = Path(png_images_dir)
 indices = [glob.parts[-1] for glob in p.glob('*.png')]
@@ -54,8 +56,8 @@ for img_name in indices:
     
     for index, (b, t) in enumerate(zip(bottom, top)):
         
-        cropped_img = img.crop((0, int(t), width, int(b)))
-        cropped_label = label.crop((0, int(t), width, int(b)))
+        cropped_img = img.crop((0, int(t), width - 1, int(b)))
+        cropped_label = label.crop((0, int(t), width - 1, int(b)))
         new_name = '{}:{}'.format(os.path.splitext(img_name)[0], index)
         
         idx += 1
