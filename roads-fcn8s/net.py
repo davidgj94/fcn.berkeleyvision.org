@@ -95,12 +95,23 @@ def fcn_roads(split, batch_size):
     lr_mult_score = 1
     decay_mult_score = 1
 
-    n.score_fr_roads = L.Convolution(n.drop7, 
+    n.score_fr_roads_1 = L.Convolution(n.drop7, 
         num_output=num_classes, 
         kernel_size=1, 
         pad=0, 
         weight_filler=dict(type='xavier'),
         param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+    
+    n.score_fr_roads_2 = L.Convolution(n.pool5, 
+        num_output=num_classes, 
+        kernel_size=1, 
+        pad=0, 
+        weight_filler=dict(type='xavier'),
+        param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+    
+    
+    n.score_fr_roads = L.Eltwise(n.score_fr_roads_1, n.score_fr_roads_2, operation=P.Eltwise.SUM)
+    
     
     n.upscore2_roads = L.Deconvolution(n.score_fr_roads,
         convolution_param=dict(num_output=num_classes, kernel_size=4, stride=2, bias_term=False),
