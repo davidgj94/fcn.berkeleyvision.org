@@ -4,10 +4,13 @@ import numpy as np
 import os
 from pathlib import Path
 import shutil
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir) 
 import vis
-import pdb
 
-_dataset_dir = 'data/roads/'
+_dataset_dir = '../data/roads/'
 dataset_dir = _dataset_dir + 'ROADS/'
 png_images_dir = dataset_dir + 'PNGImages/'
 segmentation_class_raw_dir = dataset_dir + 'SegmentationClassRaw/'
