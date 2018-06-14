@@ -40,6 +40,8 @@ train_split = 0.7
 train_size = 0
 val_size = 0
 idx = 0
+num_roads = 0
+roads_mean = np.array([0.0, 0.0, 0.0])
 
 for img_name in indices:
     
@@ -47,6 +49,9 @@ for img_name in indices:
     label_dir = segmentation_class_raw_dir + img_name 
     img = Image.open(image_dir)
     label = Image.open(label_dir)
+    
+    num_roads += 1
+    roads_mean += np.mean(np.array(img), axis=(0, 1))
     
     width, height = img.size   # Get dimensions
     bottom = np.arange(crop_height, height, crop_step)
@@ -79,6 +84,8 @@ for img_name in indices:
 shutil.rmtree(png_images_dir, ignore_errors=True)
 shutil.rmtree(segmentation_class_raw_dir, ignore_errors=True)
 
+roads_mean /= num_roads
+print('roads_mean: {}\n'.format(str(roads_mean))) #[109.31270171 112.73650684 107.62839719]
 print('train_size: {}\n'.format(str(train_size)))
 print('val_size: {}\n'.format(str(val_size)))
 print('trainval_size: {}\n'.format(str(train_size + val_size)))
