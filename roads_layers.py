@@ -105,7 +105,7 @@ class RoadsDataLayer(caffe.Layer):
         - subtract mean
         - transpose to channel x height x width order
         """
-        batch_result = np.zeros((len(batch), 3, 192, 256))
+        batch_result = np.zeros((len(batch), 3, 200, 257))
         for img_idx in range(len(batch)):
             im = Image.open('{}/{}.png'.format(self.img_dir, batch[img_idx]))
             in_ = np.array(im, dtype=np.float32)
@@ -121,7 +121,7 @@ class RoadsDataLayer(caffe.Layer):
         Load label image as 1 x height x width integer array of label indices.
         The leading singleton dimension is required by the loss.
         """
-        batch_result = np.zeros((len(batch), 1, 192, 256))
+        batch_result = np.zeros((len(batch), 1, 200, 257))
         for img_idx in range(len(batch)):
             im = Image.open('{}/{}.png'.format(self.label_dir, batch[img_idx]))
             label = np.array(im, dtype=np.uint8)
