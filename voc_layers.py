@@ -2,7 +2,6 @@ import caffe
 
 import numpy as np
 from PIL import Image
-
 import random
 
 class VOCSegDataLayer(caffe.Layer):

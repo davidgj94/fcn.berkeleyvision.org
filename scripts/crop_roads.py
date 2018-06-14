@@ -81,8 +81,6 @@ for img_name in indices:
         cropped_img.save(images_cropped_dir + new_name + '.png')
         cropped_label.save(labels_cropped_dir + new_name + '.png')
         
-shutil.rmtree(png_images_dir, ignore_errors=True)
-shutil.rmtree(segmentation_class_raw_dir, ignore_errors=True)
 
 roads_mean /= num_roads
 print('roads_mean: {}\n'.format(str(roads_mean))) #[109.31270171 112.73650684 107.62839719]
