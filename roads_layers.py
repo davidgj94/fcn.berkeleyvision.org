@@ -6,9 +6,12 @@ import skimage.io
 import matplotlib.pyplot as plt
 from itertools import islice
 from pathlib import Path
+import random
 import pdb
 
-def chunk(it, size):
+def chunk(it, size, seed=None):
+    if seed:
+        random.shuffle(it)
     it = iter(it)
     return iter(lambda: tuple(islice(it, size)), ())
 
@@ -55,11 +58,16 @@ class RoadsDataLayer(caffe.Layer):
         self.label_dir = self.voc_dir + 'CroppedLabels/'
 
         split_f  = '{}/ImageSets/Segmentation/{}.txt'.format(self.voc_dir, self.split)
-        indices = open(split_f, 'r').read().splitlines()
+        self.indices = open(split_f, 'r').read().splitlines()
         self.batch_size = params["batch_size"]
-        self.batches = list(chunk(indices, self.batch_size))
+        self.seed = None
+        
+        # make eval deterministic
+        if 'train' in self.split:
+            random.seed(self.seed)
+            
+        self.batches = list(chunk(self.indices, self.batch_size, self.seed))
         self.idx = 0
-
 
 
     def reshape(self, bottom, top):
@@ -79,6 +87,8 @@ class RoadsDataLayer(caffe.Layer):
         
         if self.idx == (len(self.batches) - 1):
             self.idx = 0
+            if 'train' in self.split:
+                self.batches = list(chunk(self.indices, self.batch_size, self.seed))
         else:
             self.idx += 1
 
