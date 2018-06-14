@@ -11,6 +11,42 @@ def conv_relu(bottom, nout, ks=3, stride=1, pad=1):
 def max_pool(bottom, ks=2, stride=2):
     return L.Pooling(bottom, pool=P.Pooling.MAX, kernel_size=ks, stride=stride)
 
+def fuse_scores(pool, rel_1, rel_2, rel_3, num_classes, lr_mult_score=1, decay_mult_score=1):
+
+    pool_score = L.Convolution(pool, 
+        num_output=num_classes, 
+        kernel_size=1, 
+        pad=0, 
+        weight_filler=dict(type='xavier'),
+        param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+
+    rel_1_score = L.Convolution(rel_1, 
+        num_output=num_classes, 
+        kernel_size=1, 
+        pad=0, 
+        weight_filler=dict(type='xavier'),
+        param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+
+    rel_2_score = L.Convolution(rel_2, 
+        num_output=num_classes, 
+        kernel_size=1, 
+        pad=0, 
+        weight_filler=dict(type='xavier'),
+        param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+
+    rel_3_score = L.Convolution(rel_3, 
+        num_output=num_classes, 
+        kernel_size=1, 
+        pad=0, 
+        weight_filler=dict(type='xavier'),
+        param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+
+    fuse = L.Eltwise(pool_score, rel_1_score, rel_2_score, rel_3_score, operation=P.Eltwise.SUM)
+
+    return pool_score, rel_1_score, rel_2_score, rel_3_score, fuse
+
+
+
 def fcn_roads(split, batch_size):
     
     n = caffe.NetSpec()
@@ -74,12 +110,11 @@ def fcn_roads(split, batch_size):
     
     n.scale_pool4 = L.Scale(n.pool4, filler=dict(type='constant', value=1), param=[dict(lr_mult=0)])
     
-    n.score_pool4_roads = L.Convolution(n.scale_pool4, 
-        num_output=num_classes, 
-        kernel_size=1, 
-        pad=0, 
-        weight_filler=dict(type='xavier'), 
-        param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+    n.score_4p, n.score_51, n.score_52, n.score_53, n.score_pool4_roads = fuse_scores(n.scale_pool4, 
+        n.relu5_1, 
+        n.relu5_2, 
+        n.relu5_3, 
+        num_classes)
     
     n.score_pool4c_roads = crop(n.score_pool4_roads, n.upscore2_roads)
     
@@ -94,12 +129,11 @@ def fcn_roads(split, batch_size):
     
     n.scale_pool3 = L.Scale(n.pool3, filler=dict(type='constant', value=1), param=[dict(lr_mult=0)])
 
-    n.score_pool3_roads = L.Convolution(n.scale_pool3, 
-        num_output=num_classes, 
-        kernel_size=1, 
-        pad=0, 
-        weight_filler=dict(type='xavier'), 
-        param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+    n.score_3p, n.score_41, n.score_42, n.score_43, n.score_pool3_roads = fuse_scores(n.scale_pool3, 
+        n.relu4_1, 
+        n.relu4_2, 
+        n.relu4_3, 
+        num_classes)
     
     n.score_pool3c_roads = crop(n.score_pool3_roads, n.upscore_pool4_roads)
     
@@ -115,12 +149,12 @@ def fcn_roads(split, batch_size):
 
     n.scale_pool2 = L.Scale(n.pool2, filler=dict(type='constant', value=1), param=[dict(lr_mult=0)])
 
-    n.score_pool2_roads = L.Convolution(n.scale_pool2, 
-        num_output=num_classes, 
-        kernel_size=1, 
-        pad=0, 
-        weight_filler=dict(type='xavier'), 
-        param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+
+    n.score_2p, n.score_31, n.score_32, n.score_33, n.score_pool2_roads = fuse_scores(n.scale_pool2, 
+        n.relu3_1, 
+        n.relu3_2, 
+        n.relu3_3, 
+        num_classes)
 
     n.score_pool2c_roads = crop(n.score_pool2_roads, n.upscore_pool3_roads)
 

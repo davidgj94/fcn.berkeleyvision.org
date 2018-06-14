@@ -15,5 +15,5 @@ iter_size: 1
 max_iter: 100000
 weight_decay: 0.0005
 snapshot: 110
-snapshot_prefix: "snapshot/prueba_4classes_eq"
+snapshot_prefix: "snapshot/prueba_fuse"
 test_initialization: false

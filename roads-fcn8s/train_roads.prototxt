@@ -525,10 +525,10 @@ layer {
   }
 }
 layer {
-  name: "score_pool4_roads"
+  name: "score_4p"
   type: "Convolution"
   bottom: "scale_pool4"
-  top: "score_pool4_roads"
+  top: "score_4p"
   param {
     lr_mult: 1.0
     decay_mult: 1.0
@@ -544,6 +544,84 @@ layer {
     weight_filler {
       type: "xavier"
     }
+  }
+}
+layer {
+  name: "score_51"
+  type: "Convolution"
+  bottom: "conv5_1"
+  top: "score_51"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 4
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_52"
+  type: "Convolution"
+  bottom: "conv5_2"
+  top: "score_52"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 4
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_53"
+  type: "Convolution"
+  bottom: "conv5_3"
+  top: "score_53"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 4
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_pool4_roads"
+  type: "Eltwise"
+  bottom: "score_4p"
+  bottom: "score_51"
+  bottom: "score_52"
+  bottom: "score_53"
+  top: "score_pool4_roads"
+  eltwise_param {
+    operation: SUM
   }
 }
 layer {
@@ -598,10 +676,10 @@ layer {
   }
 }
 layer {
-  name: "score_pool3_roads"
+  name: "score_3p"
   type: "Convolution"
   bottom: "scale_pool3"
-  top: "score_pool3_roads"
+  top: "score_3p"
   param {
     lr_mult: 1.0
     decay_mult: 1.0
@@ -617,6 +695,84 @@ layer {
     weight_filler {
       type: "xavier"
     }
+  }
+}
+layer {
+  name: "score_41"
+  type: "Convolution"
+  bottom: "conv4_1"
+  top: "score_41"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 4
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_42"
+  type: "Convolution"
+  bottom: "conv4_2"
+  top: "score_42"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 4
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_43"
+  type: "Convolution"
+  bottom: "conv4_3"
+  top: "score_43"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 4
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_pool3_roads"
+  type: "Eltwise"
+  bottom: "score_3p"
+  bottom: "score_41"
+  bottom: "score_42"
+  bottom: "score_43"
+  top: "score_pool3_roads"
+  eltwise_param {
+    operation: SUM
   }
 }
 layer {
@@ -671,10 +827,10 @@ layer {
   }
 }
 layer {
-  name: "score_pool2_roads"
+  name: "score_2p"
   type: "Convolution"
   bottom: "scale_pool2"
-  top: "score_pool2_roads"
+  top: "score_2p"
   param {
     lr_mult: 1.0
     decay_mult: 1.0
@@ -690,6 +846,84 @@ layer {
     weight_filler {
       type: "xavier"
     }
+  }
+}
+layer {
+  name: "score_31"
+  type: "Convolution"
+  bottom: "conv3_1"
+  top: "score_31"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 4
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_32"
+  type: "Convolution"
+  bottom: "conv3_2"
+  top: "score_32"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 4
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_33"
+  type: "Convolution"
+  bottom: "conv3_3"
+  top: "score_33"
+  param {
+    lr_mult: 1.0
+    decay_mult: 1.0
+  }
+  param {
+    lr_mult: 2.0
+    decay_mult: 0.0
+  }
+  convolution_param {
+    num_output: 4
+    pad: 0
+    kernel_size: 1
+    weight_filler {
+      type: "xavier"
+    }
+  }
+}
+layer {
+  name: "score_pool2_roads"
+  type: "Eltwise"
+  bottom: "score_2p"
+  bottom: "score_31"
+  bottom: "score_32"
+  bottom: "score_33"
+  top: "score_pool2_roads"
+  eltwise_param {
+    operation: SUM
   }
 }
 layer {
