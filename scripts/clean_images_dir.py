@@ -25,5 +25,5 @@ to_delete_imgs = list(img_names - blended_names)
 
 for img in to_delete_imgs:
     shutil.rmtree(segmentation_class_dir + img, ignore_errors=True)
-    os.remove(segmentation_class_raw_dir + '{}.png'.format(img), ignore_errors=True)
-    os.remove(png_images_dir + '{}.png'.format(img), ignore_errors=True)
+    os.remove(segmentation_class_raw_dir + '{}.png'.format(img))
+    os.remove(png_images_dir + '{}.png'.format(img))
