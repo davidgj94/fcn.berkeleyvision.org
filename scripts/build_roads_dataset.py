@@ -13,7 +13,7 @@ dataset_dir = 'data/'
 png_images_dir = dataset_dir + 'PNGImages/'
 segmentation_class_dir = dataset_dir + 'SegmentationClass/'
 segmentation_class_raw_dir = dataset_dir + 'SegmentationClassRaw/'
-labeled_roads_dir = sys.args[1]
+labeled_roads_dir = sys.argv[1]
 
 if os.path.exists(dataset_dir):
     shutil.rmtree(dataset_dir, ignore_errors=True)
