@@ -60,7 +60,7 @@ def fcn_roads(split, batch_size):
     
     n = caffe.NetSpec()
     
-    pydata_params = dict(split=split, mean=(109.31270171, 112.73650684, 107.62839719), voc_dir='../data/roads/ROADS/', 
+    pydata_params = dict(split=split, mean=(103.07961905, 105.50374829, 99.71291237), voc_dir='../data/roads/ROADS/', 
                          batch_size=batch_size)
     pylayer = 'RoadsDataLayer'
     

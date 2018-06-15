@@ -54,7 +54,7 @@ else:
 val = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/val.txt', dtype=str)
 train = np.loadtxt('../data/roads/ROADS/ImageSets/Segmentation/train.txt', dtype=str)
 
-niter = 110
+niter = 90
 nepoch = 5
 
 train_loss = []
