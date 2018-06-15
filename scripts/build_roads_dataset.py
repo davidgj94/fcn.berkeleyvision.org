@@ -9,7 +9,8 @@ import sys
 def get_subdirs(p):
     return [x for x in p.iterdir() if x.is_dir()]
 
-dataset_dir = 'data/'
+_dataset_dir = '../data/roads/'
+dataset_dir = _dataset_dir + 'ROADS/'
 png_images_dir = dataset_dir + 'PNGImages/'
 segmentation_class_dir = dataset_dir + 'SegmentationClass/'
 segmentation_class_raw_dir = dataset_dir + 'SegmentationClassRaw/'
