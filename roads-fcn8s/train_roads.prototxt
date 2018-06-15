@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "roads_layers"
     layer: "RoadsDataLayer"
-    param_str: "{\'voc_dir\': \'../data/roads/ROADS/\', \'split\': \'train\', \'batch_size\': 10, \'mean\': (109.31270171, 112.73650684, 107.62839719)}"
+    param_str: "{\'voc_dir\': \'../data/roads/ROADS/\', \'split\': \'train\', \'batch_size\': 10, \'mean\': (103.07961905, 105.50374829, 99.71291237)}"
   }
 }
 layer {
@@ -36,9 +36,27 @@ layer {
   top: "conv1_1"
 }
 layer {
+  name: "bn1_1"
+  type: "BatchNorm"
+  bottom: "conv1_1"
+  top: "bn1_1"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale1_1"
+  type: "Scale"
+  bottom: "bn1_1"
+  top: "scale1_1"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "conv1_2"
   type: "Convolution"
-  bottom: "conv1_1"
+  bottom: "scale1_1"
   top: "conv1_2"
   param {
     lr_mult: 1.0
@@ -62,9 +80,27 @@ layer {
   top: "conv1_2"
 }
 layer {
+  name: "bn1_2"
+  type: "BatchNorm"
+  bottom: "conv1_2"
+  top: "bn1_2"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale1_2"
+  type: "Scale"
+  bottom: "bn1_2"
+  top: "scale1_2"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "pool1"
   type: "Pooling"
-  bottom: "conv1_2"
+  bottom: "scale1_2"
   top: "pool1"
   pooling_param {
     pool: MAX
@@ -99,9 +135,27 @@ layer {
   top: "conv2_1"
 }
 layer {
+  name: "bn2_1"
+  type: "BatchNorm"
+  bottom: "conv2_1"
+  top: "bn2_1"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale2_1"
+  type: "Scale"
+  bottom: "bn2_1"
+  top: "scale2_1"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "conv2_2"
   type: "Convolution"
-  bottom: "conv2_1"
+  bottom: "scale2_1"
   top: "conv2_2"
   param {
     lr_mult: 1.0
@@ -125,9 +179,27 @@ layer {
   top: "conv2_2"
 }
 layer {
+  name: "bn2_2"
+  type: "BatchNorm"
+  bottom: "conv2_2"
+  top: "bn2_2"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale2_2"
+  type: "Scale"
+  bottom: "bn2_2"
+  top: "scale2_2"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "pool2"
   type: "Pooling"
-  bottom: "conv2_2"
+  bottom: "scale2_2"
   top: "pool2"
   pooling_param {
     pool: MAX
@@ -162,9 +234,27 @@ layer {
   top: "conv3_1"
 }
 layer {
+  name: "bn3_1"
+  type: "BatchNorm"
+  bottom: "conv3_1"
+  top: "bn3_1"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale3_1"
+  type: "Scale"
+  bottom: "bn3_1"
+  top: "scale3_1"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "conv3_2"
   type: "Convolution"
-  bottom: "conv3_1"
+  bottom: "scale3_1"
   top: "conv3_2"
   param {
     lr_mult: 1.0
@@ -188,9 +278,27 @@ layer {
   top: "conv3_2"
 }
 layer {
+  name: "bn3_2"
+  type: "BatchNorm"
+  bottom: "conv3_2"
+  top: "bn3_2"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale3_2"
+  type: "Scale"
+  bottom: "bn3_2"
+  top: "scale3_2"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "conv3_3"
   type: "Convolution"
-  bottom: "conv3_2"
+  bottom: "scale3_2"
   top: "conv3_3"
   param {
     lr_mult: 1.0
@@ -214,9 +322,27 @@ layer {
   top: "conv3_3"
 }
 layer {
+  name: "bn3_3"
+  type: "BatchNorm"
+  bottom: "conv3_3"
+  top: "bn3_3"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale3_3"
+  type: "Scale"
+  bottom: "bn3_3"
+  top: "scale3_3"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "pool3"
   type: "Pooling"
-  bottom: "conv3_3"
+  bottom: "scale3_3"
   top: "pool3"
   pooling_param {
     pool: MAX
@@ -251,9 +377,27 @@ layer {
   top: "conv4_1"
 }
 layer {
+  name: "bn4_1"
+  type: "BatchNorm"
+  bottom: "conv4_1"
+  top: "bn4_1"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale4_1"
+  type: "Scale"
+  bottom: "bn4_1"
+  top: "scale4_1"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "conv4_2"
   type: "Convolution"
-  bottom: "conv4_1"
+  bottom: "scale4_1"
   top: "conv4_2"
   param {
     lr_mult: 1.0
@@ -277,9 +421,27 @@ layer {
   top: "conv4_2"
 }
 layer {
+  name: "bn4_2"
+  type: "BatchNorm"
+  bottom: "conv4_2"
+  top: "bn4_2"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale4_2"
+  type: "Scale"
+  bottom: "bn4_2"
+  top: "scale4_2"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "conv4_3"
   type: "Convolution"
-  bottom: "conv4_2"
+  bottom: "scale4_2"
   top: "conv4_3"
   param {
     lr_mult: 1.0
@@ -303,9 +465,27 @@ layer {
   top: "conv4_3"
 }
 layer {
+  name: "bn4_3"
+  type: "BatchNorm"
+  bottom: "conv4_3"
+  top: "bn4_3"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale4_3"
+  type: "Scale"
+  bottom: "bn4_3"
+  top: "scale4_3"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "pool4"
   type: "Pooling"
-  bottom: "conv4_3"
+  bottom: "scale4_3"
   top: "pool4"
   pooling_param {
     pool: MAX
@@ -340,9 +520,27 @@ layer {
   top: "conv5_1"
 }
 layer {
+  name: "bn5_1"
+  type: "BatchNorm"
+  bottom: "conv5_1"
+  top: "bn5_1"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale5_1"
+  type: "Scale"
+  bottom: "bn5_1"
+  top: "scale5_1"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "conv5_2"
   type: "Convolution"
-  bottom: "conv5_1"
+  bottom: "scale5_1"
   top: "conv5_2"
   param {
     lr_mult: 1.0
@@ -366,9 +564,27 @@ layer {
   top: "conv5_2"
 }
 layer {
+  name: "bn5_2"
+  type: "BatchNorm"
+  bottom: "conv5_2"
+  top: "bn5_2"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale5_2"
+  type: "Scale"
+  bottom: "bn5_2"
+  top: "scale5_2"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "conv5_3"
   type: "Convolution"
-  bottom: "conv5_2"
+  bottom: "scale5_2"
   top: "conv5_3"
   param {
     lr_mult: 1.0
@@ -392,9 +608,27 @@ layer {
   top: "conv5_3"
 }
 layer {
+  name: "bn5_3"
+  type: "BatchNorm"
+  bottom: "conv5_3"
+  top: "bn5_3"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale5_3"
+  type: "Scale"
+  bottom: "bn5_3"
+  top: "scale5_3"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "pool5"
   type: "Pooling"
-  bottom: "conv5_3"
+  bottom: "scale5_3"
   top: "pool5"
   pooling_param {
     pool: MAX
@@ -429,18 +663,36 @@ layer {
   top: "fc6"
 }
 layer {
+  name: "bn6"
+  type: "BatchNorm"
+  bottom: "fc6"
+  top: "bn6"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale6"
+  type: "Scale"
+  bottom: "bn6"
+  top: "scale6"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "drop6"
   type: "Dropout"
-  bottom: "fc6"
-  top: "fc6"
+  bottom: "scale6"
+  top: "scale6"
   dropout_param {
-    dropout_ratio: 0.5
+    dropout_ratio: 0.20000000298
   }
 }
 layer {
   name: "fc7"
   type: "Convolution"
-  bottom: "fc6"
+  bottom: "scale6"
   top: "fc7"
   param {
     lr_mult: 1.0
@@ -464,18 +716,36 @@ layer {
   top: "fc7"
 }
 layer {
+  name: "bn7"
+  type: "BatchNorm"
+  bottom: "fc7"
+  top: "bn7"
+  batch_norm_param {
+    use_global_stats: false
+  }
+}
+layer {
+  name: "scale7"
+  type: "Scale"
+  bottom: "bn7"
+  top: "scale7"
+  scale_param {
+    bias_term: true
+  }
+}
+layer {
   name: "drop7"
   type: "Dropout"
-  bottom: "fc7"
-  top: "fc7"
+  bottom: "scale7"
+  top: "scale7"
   dropout_param {
-    dropout_ratio: 0.5
+    dropout_ratio: 0.20000000298
   }
 }
 layer {
   name: "score_fr_roads"
   type: "Convolution"
-  bottom: "fc7"
+  bottom: "scale7"
   top: "score_fr_roads"
   param {
     lr_mult: 1.0
@@ -510,24 +780,9 @@ layer {
   }
 }
 layer {
-  name: "scale_pool4"
-  type: "Scale"
-  bottom: "pool4"
-  top: "scale_pool4"
-  param {
-    lr_mult: 0.0
-  }
-  scale_param {
-    filler {
-      type: "constant"
-      value: 1.0
-    }
-  }
-}
-layer {
   name: "score_4p"
   type: "Convolution"
-  bottom: "scale_pool4"
+  bottom: "pool4"
   top: "score_4p"
   param {
     lr_mult: 1.0
@@ -549,7 +804,7 @@ layer {
 layer {
   name: "score_51"
   type: "Convolution"
-  bottom: "conv5_1"
+  bottom: "scale5_1"
   top: "score_51"
   param {
     lr_mult: 1.0
@@ -571,7 +826,7 @@ layer {
 layer {
   name: "score_52"
   type: "Convolution"
-  bottom: "conv5_2"
+  bottom: "scale5_2"
   top: "score_52"
   param {
     lr_mult: 1.0
@@ -593,7 +848,7 @@ layer {
 layer {
   name: "score_53"
   type: "Convolution"
-  bottom: "conv5_3"
+  bottom: "scale5_3"
   top: "score_53"
   param {
     lr_mult: 1.0
@@ -661,24 +916,9 @@ layer {
   }
 }
 layer {
-  name: "scale_pool3"
-  type: "Scale"
-  bottom: "pool3"
-  top: "scale_pool3"
-  param {
-    lr_mult: 0.0
-  }
-  scale_param {
-    filler {
-      type: "constant"
-      value: 1.0
-    }
-  }
-}
-layer {
   name: "score_3p"
   type: "Convolution"
-  bottom: "scale_pool3"
+  bottom: "pool3"
   top: "score_3p"
   param {
     lr_mult: 1.0
@@ -700,7 +940,7 @@ layer {
 layer {
   name: "score_41"
   type: "Convolution"
-  bottom: "conv4_1"
+  bottom: "scale4_1"
   top: "score_41"
   param {
     lr_mult: 1.0
@@ -722,7 +962,7 @@ layer {
 layer {
   name: "score_42"
   type: "Convolution"
-  bottom: "conv4_2"
+  bottom: "scale4_2"
   top: "score_42"
   param {
     lr_mult: 1.0
@@ -744,7 +984,7 @@ layer {
 layer {
   name: "score_43"
   type: "Convolution"
-  bottom: "conv4_3"
+  bottom: "scale4_3"
   top: "score_43"
   param {
     lr_mult: 1.0
@@ -812,24 +1052,9 @@ layer {
   }
 }
 layer {
-  name: "scale_pool2"
-  type: "Scale"
-  bottom: "pool2"
-  top: "scale_pool2"
-  param {
-    lr_mult: 0.0
-  }
-  scale_param {
-    filler {
-      type: "constant"
-      value: 1.0
-    }
-  }
-}
-layer {
   name: "score_2p"
   type: "Convolution"
-  bottom: "scale_pool2"
+  bottom: "pool2"
   top: "score_2p"
   param {
     lr_mult: 1.0
@@ -851,7 +1076,7 @@ layer {
 layer {
   name: "score_31"
   type: "Convolution"
-  bottom: "conv3_1"
+  bottom: "scale3_1"
   top: "score_31"
   param {
     lr_mult: 1.0
@@ -873,7 +1098,7 @@ layer {
 layer {
   name: "score_32"
   type: "Convolution"
-  bottom: "conv3_2"
+  bottom: "scale3_2"
   top: "score_32"
   param {
     lr_mult: 1.0
@@ -895,7 +1120,7 @@ layer {
 layer {
   name: "score_33"
   type: "Convolution"
-  bottom: "conv3_3"
+  bottom: "scale3_3"
   top: "score_33"
   param {
     lr_mult: 1.0

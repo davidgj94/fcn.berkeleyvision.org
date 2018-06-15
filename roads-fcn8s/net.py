@@ -2,7 +2,7 @@ import caffe
 from caffe import layers as L, params as P
 from caffe.coord_map import crop
 
-def conv_relu(bottom, nout, ks=3, stride=1, pad=1, split):
+def conv_relu(bottom, nout, ks=3, stride=1, pad=1, split='train'):
     conv = L.Convolution(bottom, kernel_size=ks, stride=stride,
         num_output=nout, pad=pad,
         param=[dict(lr_mult=1, decay_mult=1), dict(lr_mult=2, decay_mult=0)])
@@ -13,7 +13,7 @@ def conv_relu(bottom, nout, ks=3, stride=1, pad=1, split):
     if 'train' in split:
         use_global_stats = False
     bn = L.BatchNorm(relu, use_global_stats=use_global_stats)
-    scale = L.Scale(bn, scale_param=dict(bias_term: True))
+    scale = L.Scale(bn, scale_param=dict(bias_term=True))
     
     return conv, relu, bn, scale
 
@@ -70,33 +70,33 @@ def fcn_roads(split, batch_size):
             ntop=2, param_str=str(pydata_params))
 
     # the base net
-    n.conv1_1, n.relu1_1, n.bn1_1, n.scale1_1 = conv_relu(n.data, 64, pad=100)
-    n.conv1_2, n.relu1_2, n.bn1_2, n.scale1_2 = conv_relu(n.scale1_1, 64)
+    n.conv1_1, n.relu1_1, n.bn1_1, n.scale1_1 = conv_relu(n.data, 64, pad=100, split=split)
+    n.conv1_2, n.relu1_2, n.bn1_2, n.scale1_2 = conv_relu(n.scale1_1, 64, split=split)
     n.pool1 = max_pool(n.scale1_2)
 
-    n.conv2_1, n.relu2_1, n.bn2_1, n.scale2_1 = conv_relu(n.pool1, 128)
-    n.conv2_2, n.relu2_2, n.bn2_2, n.scale2_2 = conv_relu(n.scale2_1, 128)
+    n.conv2_1, n.relu2_1, n.bn2_1, n.scale2_1 = conv_relu(n.pool1, 128, split=split)
+    n.conv2_2, n.relu2_2, n.bn2_2, n.scale2_2 = conv_relu(n.scale2_1, 128, split=split)
     n.pool2 = max_pool(n.scale2_2)
 
-    n.conv3_1, n.relu3_1, n.bn3_1, n.scale3_1 = conv_relu(n.pool2, 256)
-    n.conv3_2, n.relu3_2, n.bn3_2, n.scale3_2 = conv_relu(n.scale3_1, 256)
-    n.conv3_3, n.relu3_3, n.bn3_3, n.scale3_3 = conv_relu(n.scale3_2, 256)
+    n.conv3_1, n.relu3_1, n.bn3_1, n.scale3_1 = conv_relu(n.pool2, 256, split=split)
+    n.conv3_2, n.relu3_2, n.bn3_2, n.scale3_2 = conv_relu(n.scale3_1, 256, split=split)
+    n.conv3_3, n.relu3_3, n.bn3_3, n.scale3_3 = conv_relu(n.scale3_2, 256, split=split)
     n.pool3 = max_pool(n.scale3_3)
 
-    n.conv4_1, n.relu4_1, n.bn4_1, n.scale4_1 = conv_relu(n.pool3, 512)
-    n.conv4_2, n.relu4_2, n.bn4_2, n.scale4_2 = conv_relu(n.scale4_1, 512)
-    n.conv4_3, n.relu4_3, n.bn4_3, n.scale4_3 = conv_relu(n.scale4_2, 512)
+    n.conv4_1, n.relu4_1, n.bn4_1, n.scale4_1 = conv_relu(n.pool3, 512, split=split)
+    n.conv4_2, n.relu4_2, n.bn4_2, n.scale4_2 = conv_relu(n.scale4_1, 512, split=split)
+    n.conv4_3, n.relu4_3, n.bn4_3, n.scale4_3 = conv_relu(n.scale4_2, 512, split=split)
     n.pool4 = max_pool(n.scale4_3)
 
-    n.conv5_1, n.relu5_1, n.bn5_1, n.scale5_1 = conv_relu(n.pool4, 512)
-    n.conv5_2, n.relu5_2, n.bn5_2, n.scale5_2 = conv_relu(n.scale5_1, 512)
-    n.conv5_3, n.relu5_3, n.bn5_3, n.scale5_3 = conv_relu(n.scale5_2, 512)
+    n.conv5_1, n.relu5_1, n.bn5_1, n.scale5_1 = conv_relu(n.pool4, 512, split=split)
+    n.conv5_2, n.relu5_2, n.bn5_2, n.scale5_2 = conv_relu(n.scale5_1, 512, split=split)
+    n.conv5_3, n.relu5_3, n.bn5_3, n.scale5_3 = conv_relu(n.scale5_2, 512, split=split)
     n.pool5 = max_pool(n.scale5_3)
 
     # fully conv
-    n.fc6, n.relu6, n.bn6, n.scale6 = conv_relu(n.pool5, 4096, ks=7, pad=0)
+    n.fc6, n.relu6, n.bn6, n.scale6 = conv_relu(n.pool5, 4096, ks=7, pad=0, split=split)
     n.drop6 = L.Dropout(n.scale6, dropout_ratio=0.2, in_place=True)
-    n.fc7, n.relu7, n.bn7, n.scale7 = conv_relu(n.drop6, 4096, ks=1, pad=0)
+    n.fc7, n.relu7, n.bn7, n.scale7 = conv_relu(n.drop6, 4096, ks=1, pad=0, split=split)
     n.drop7 = L.Dropout(n.scale7, dropout_ratio=0.2, in_place=True)
     
     # score
@@ -104,22 +104,22 @@ def fcn_roads(split, batch_size):
     lr_mult_score = 1
     decay_mult_score = 1
 
-    n.score_fr_roads_1 = L.Convolution(n.drop7, 
+    n.score_fr_roads = L.Convolution(n.drop7, 
         num_output=num_classes, 
         kernel_size=1, 
         pad=0, 
         weight_filler=dict(type='xavier'),
         param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
     
-    n.score_fr_roads_2 = L.Convolution(n.pool5, 
-        num_output=num_classes, 
-        kernel_size=1, 
-        pad=0, 
-        weight_filler=dict(type='xavier'),
-        param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
+    # n.score_fr_roads_2 = L.Convolution(n.pool5, 
+    #     num_output=num_classes, 
+    #     kernel_size=1, 
+    #     pad=0, 
+    #     weight_filler=dict(type='xavier'),
+    #     param=[dict(lr_mult=lr_mult_score, decay_mult=decay_mult_score), dict(lr_mult=2*lr_mult_score, decay_mult=0)])
     
     
-    n.score_fr_roads = L.Eltwise(n.score_fr_roads_1, n.score_fr_roads_2, operation=P.Eltwise.SUM)
+    # n.score_fr_roads = L.Eltwise(n.score_fr_roads_1, n.score_fr_roads_2, operation=P.Eltwise.SUM)
     
     
     n.upscore2_roads = L.Deconvolution(n.score_fr_roads,
