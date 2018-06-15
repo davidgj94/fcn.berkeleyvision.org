@@ -19,7 +19,7 @@ save_dir = dataset_dir + 'Blended/'
 if os.path.exists(save_dir):
     shutil.rmtree(save_dir, ignore_errors=True)
 os.makedirs(save_dir)
-pdb.set_trace()
+
 p = Path(png_images_dir)
 #pdb.set_trace()
 for glob in p.glob("*.png"):
