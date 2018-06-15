@@ -58,19 +58,19 @@ for img_name in indices:
     top = bottom - crop_height
     
     idx += 1
-        
-    if idx % 3 != 0:
-        train_size += 1
-        desc_txt = 'train.txt'
-    else:
-        val_size += 1
-        desc_txt = 'val.txt'
     
     for index, (b, t) in enumerate(zip(bottom, top)):
         
         cropped_img = img.crop((0, int(t), width, int(b)))
         cropped_label = label.crop((0, int(t), width, int(b)))
         new_name = '{}:{}'.format(os.path.splitext(img_name)[0], index)
+
+        if idx % 3 != 0:
+            train_size += 1
+            desc_txt = 'train.txt'
+        else:
+            val_size += 1
+            desc_txt = 'val.txt'
             
         with open(image_sets_dir + desc_txt, 'a') as txt:
             txt.write(new_name + '\n')
